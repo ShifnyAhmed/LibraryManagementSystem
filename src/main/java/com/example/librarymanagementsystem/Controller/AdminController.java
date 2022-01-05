@@ -1,7 +1,9 @@
 package com.example.librarymanagementsystem.Controller;
 
+import com.example.librarymanagementsystem.Model.Notification;
 import com.example.librarymanagementsystem.Model.User;
 import com.example.librarymanagementsystem.Repository.UserRepository;
+import com.example.librarymanagementsystem.Service.NotificationService;
 import com.example.librarymanagementsystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +27,9 @@ public class AdminController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    NotificationService notificationService;
 
     //displays all the members of showcase bookstore who are not blacklisted
     @RequestMapping(value = "/admin/viewallmembers")
@@ -89,13 +97,32 @@ public class AdminController {
 
     //updates the blacklist from no to yes
     @PostMapping (value = "/admin/addtoblacklist")
-    public String addToBlacklist(@RequestParam("user_id")Long id,
-                                 @RequestParam("blacklist") String blacklist
+    public String addToBlacklist(@Valid Notification notification,
+                                 @RequestParam("user_id")Long id,
+                                 @RequestParam("blacklist") String blacklist,
+                                 @RequestParam("email") String email
                                  ,Model model)
     {
+        String message="You have been blacklisted by the admin,From now on you will be unable to borrow books online, contact admin to resolve the problem.";
             try {
 
                 userService.update(blacklist,id);
+
+                //Adding notification to user
+                //
+                notification.setMessage(message);
+
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime localDateTime = LocalDateTime.now();
+
+                //setting date
+                notification.setDate(dateTimeFormatter.format(localDateTime));
+
+                //setting blacklisted user email
+                notification.setEmail(email);
+
+                //saving notification
+                notificationService.AddNotification(notification);
 
                 Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
                 UserDetails userDetails=(UserDetails)authentication.getPrincipal();
@@ -138,13 +165,26 @@ public class AdminController {
 
     //updates the member level(bronze,sliver,platinum,gold)
     @PostMapping (value = "/admin/promotemember")
-    public String promoteMember(@RequestParam("user_id")Long id,
-                                 @RequestParam("level") String level
+    public String promoteMember(@Valid Notification notification,
+                                 @RequestParam("user_id")Long id,
+                                 @RequestParam("level") String level,
+                                @RequestParam("email") String email
             ,Model model)
     {
+        String message="You have been promoted/demoted ! Check your level in profile.";
         try {
 
             userService.promoteMember(level,id);
+
+            //Adding notification to user
+
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
 
             Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
             UserDetails userDetails=(UserDetails)authentication.getPrincipal();
@@ -221,13 +261,27 @@ public class AdminController {
 
     //updates the blacklist from yes to no
     @PostMapping (value = "/admin/removefromblacklist")
-    public String RemoveFromBlacklist(@RequestParam("user_id")Long id,
-                                 @RequestParam("blacklist") String blacklist
+    public String RemoveFromBlacklist(@Valid Notification notification,
+                                @RequestParam("user_id")Long id,
+                                 @RequestParam("blacklist") String blacklist,
+                                      @RequestParam("email") String email
             ,Model model)
     {
+        String message="Congrats! You have been removed from blacklist, start borrowing books online and have fun!";
         try {
 
             userService.update(blacklist,id);
+
+
+            //Adding notification to user
+
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
 
             Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
             UserDetails userDetails=(UserDetails)authentication.getPrincipal();

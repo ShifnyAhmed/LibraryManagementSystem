@@ -85,10 +85,10 @@
                 <td th:text="${User.getLevel()}"></td>
                 <td th:text="${User.getBlacklist()}"></td>
                 <td>
-                    <a href="#" class="btn btn-success" style="width: 100px" >Remove</a>
+                    <a th:href="@{/admin/deletepage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 100px" >Remove</a>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-success" style="width: 190px" >Remove from Blacklist</a>
+                    <a th:href="@{/admin/removeblacklistpage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 190px" >Remove from Blacklist</a>
                 </td>
 
             </tr>

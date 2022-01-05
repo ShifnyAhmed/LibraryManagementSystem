@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -19,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByBlacklist(String blacklist);
 
-    //This runs a nativeSql query as the usual update function of JPARepo is not working
+    //This runs a nativeSql query bcz the usual update function of JPARepo is more similar to save function which removes the user role on update
     @Modifying
     @Query(value = "UPDATE user u set blacklisted =?1 where u.id = ?2",
             nativeQuery = true)

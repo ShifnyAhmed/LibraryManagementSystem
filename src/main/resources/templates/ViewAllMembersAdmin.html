@@ -57,9 +57,16 @@
     <div th:if="${param.blacklistsuccess}">
         <div class="alert alert-success">Member Was Blacklisted Successfully !</div>
     </div>
+    <div th:if="${param.removeblacklistsuccess}">
+        <div class="alert alert-success">Member Was Removed From Blacklist Successfully !</div>
+    </div>
 
     <div th:if="${param.promotionsuccess}">
         <div class="alert alert-success">Member Promoted/Demoted Successfully !</div>
+    </div>
+
+    <div th:if="${param.deletemembersuccess}">
+        <div class="alert alert-success">Member Deleted Successfully !</div>
     </div>
 
     <div th:if="${param.unsuccess}">
@@ -99,7 +106,7 @@
                 <td th:text="${User.getLevel()}"></td>
                 <td th:text="${User.getBlacklist()}"></td>
                 <td>
-                    <a href="#" class="btn btn-success" style="width: 100px" >Remove</a>
+                    <a th:href="@{/admin/deletepage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 100px" >Remove</a>
                 </td>
                 <td>
                     <a th:href="@{/admin/addblacklistpage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 150px" >Add to Blacklist</a>

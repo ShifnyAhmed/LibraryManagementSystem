@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService{
 
     }
 
+    @Transactional
     @Override
     public void promoteMember(String level, Long id) {
         userRepository.updateUserLevel(level,id);

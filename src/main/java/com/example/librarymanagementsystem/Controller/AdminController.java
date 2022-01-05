@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,27 +85,11 @@ public class AdminController {
 
     //updates the blacklist from no to yes
     @PostMapping (value = "/admin/addtoblacklist")
-    public String addToBlacklist(@Valid User user,
-                                 @RequestParam("user_id")Long id, @RequestParam("email")String email,
-                                 @RequestParam("name") String name,
-                                 @RequestParam("contact") String contact,
-                                 @RequestParam("password") String password,
-                                 @RequestParam("dateofbirth") String dateofbirth,
-                                 @RequestParam("level") String level,
+    public String addToBlacklist(@RequestParam("user_id")Long id,
                                  @RequestParam("blacklist") String blacklist
                                  ,Model model)
     {
             try {
-//                user.setId(id);
-//                user.setFullname(name);
-//                user.setEmail(email);
-//                user.setMobile(contact);
-//                user.setPassword(password);
-//                user.setDateofbirth(dateofbirth);
-//                user.setLevel(level);
-//                user.setBlacklist(blacklist);
-//
-//                userService.saveOrUpdate(user);
 
                 userService.update(blacklist,id);
 
@@ -119,10 +102,50 @@ public class AdminController {
                 return "redirect:/admin/viewallmembers?unsuccess";
             }
 
-
-
-
         return "redirect:/admin/viewallmembers?blacklistsuccess";
     }
 
+//------------------------------------------------------------------------------------------
+
+    //This is a confirmation page to Promote member level
+    @GetMapping(value = "/admin/promotememberpage/{id}")
+    public String PromoteMemberButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<User> promote_member_profile = userRepository.findById(id);
+
+        model.addAttribute("id",promote_member_profile.get().getId());
+        model.addAttribute("name",promote_member_profile.get().getFullname());
+        model.addAttribute("email",promote_member_profile.get().getEmail());
+        model.addAttribute("contact",promote_member_profile.get().getMobile());
+        model.addAttribute("password",promote_member_profile.get().getPassword());
+        model.addAttribute("dateofbirth",promote_member_profile.get().getDateofbirth());
+        model.addAttribute("level",promote_member_profile.get().getLevel());
+        model.addAttribute("blacklist",promote_member_profile.get().getBlacklist());
+
+        //redirecting to PromoteMemberAdmin html page
+        return "PromoteMemberAdmin";
+    }
+
+//------------------------------------------------------------------------------------------
+
+    //updates the member level(bronze,sliver,platinum,gold)
+    @PostMapping (value = "/admin/promotemember")
+    public String promoteMember(@RequestParam("user_id")Long id,
+                                 @RequestParam("level") String level
+            ,Model model)
+    {
+        try {
+
+            userService.promoteMember(level,id);
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+        }
+        catch (Exception e){
+            return "redirect:/admin/viewallmembers?unsuccess";
+        }
+
+        return "redirect:/admin/viewallmembers?promotionsuccess";
+    }
 }

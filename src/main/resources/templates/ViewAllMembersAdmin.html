@@ -57,10 +57,16 @@
     <div th:if="${param.blacklistsuccess}">
         <div class="alert alert-success">Member Was Blacklisted Successfully !</div>
     </div>
+
+    <div th:if="${param.promotionsuccess}">
+        <div class="alert alert-success">Member Promoted/Demoted Successfully !</div>
+    </div>
+
     <div th:if="${param.unsuccess}">
-        <div class="alert alert-danger">Something went wrong when blacklisting member !</div>
+        <div class="alert alert-danger">Something went wrong !</div>
     </div>
 </div>
+
 <br>
 <div align="center">
     <h5>Registered Members Of Showcase Bookstore</h5>
@@ -77,6 +83,7 @@
                 <th scope="col">DOB</th>
                 <th scope="col">Level</th>
                 <th scope="col">Blacklisted ?</th>
+                <th scope="col">Action</th>
                 <th scope="col">Action</th>
                 <th scope="col">Action</th>
 
@@ -96,6 +103,9 @@
                 </td>
                 <td>
                     <a th:href="@{/admin/addblacklistpage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 150px" >Add to Blacklist</a>
+                </td>
+                <td>
+                    <a th:href="@{/admin/promotememberpage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 150px" >Promote/Demote</a>
                 </td>
 
             </tr>

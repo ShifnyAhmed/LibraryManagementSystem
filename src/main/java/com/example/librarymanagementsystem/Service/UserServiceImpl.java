@@ -64,12 +64,18 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmail(user.getEmail());
     }
 
+    //This function calls a nativeSql query as the usual update function of JPA is not working
     @Transactional
     @Override
     public void update(String blacklist, Long id) {
 
         userRepository.updateUser(blacklist,id);
 
+    }
+
+    @Override
+    public void promoteMember(String level, Long id) {
+        userRepository.updateUserLevel(level,id);
     }
 
 
@@ -80,18 +86,8 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public void deleteFile(Long id) {
+    public void deleteMember(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean passwordCheck(String pas_1, String pas_2) {
-        return bCryptPasswordEncoder.matches(pas_1, pas_2);
-    }
-
-    @Override
-    public boolean CheckIfUserExists(String email) {
-        return userRepository.findByEmail(email) != null;
     }
 
     @Override

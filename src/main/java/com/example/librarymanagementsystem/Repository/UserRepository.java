@@ -19,12 +19,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByBlacklist(String blacklist);
 
- //   @Query(value = "UPDATE `librarybookstore`.`user` SET `blacklisted` = 'Yes' WHERE (`id` = '1');")
-
-
+    //This runs a nativeSql query as the usual update function of JPARepo is not working
     @Modifying
     @Query(value = "UPDATE user u set blacklisted =?1 where u.id = ?2",
             nativeQuery = true)
     void updateUser(@Param("blacklist") String blacklist, @Param("id") Long id);
+
+
+    //used to promote the member
+    @Modifying
+    @Query(value = "UPDATE user u set level =?1 where u.id = ?2",
+            nativeQuery = true)
+    void updateUserLevel(@Param("level") String level, @Param("id") Long id);
 
 }

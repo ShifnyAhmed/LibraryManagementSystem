@@ -3,7 +3,7 @@ package com.example.librarymanagementsystem.Model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "book")
+@Table(name = "book", uniqueConstraints = @UniqueConstraint(columnNames = "book_name"))
 public class Book {
 
     @Id
@@ -16,31 +16,44 @@ public class Book {
     @Column(name = "book_author")
     private String author;
 
-    @Column(name = "book_publisher")
-    private String publisher;
+    @Column(name = "book_category")
+    private String category;
 
     private byte[] image;
 
-    private byte[] pdf;
+    @Column(name = "file_Name")
+    private String fileName;
 
-    @Column(name = "book_category")
-    private String category;
+    @Column(name = "file_Path")
+    private String filePath;
+
+
 
     //Constructors
 
 
-    public Book(Long id, String bookname, String author, String publisher, byte[] image, byte[] pdf, String category) {
+    public Book(Long id, String bookname, String author, String category, byte[] image, String fileName, String filePath) {
         this.id = id;
         this.bookname = bookname;
         this.author = author;
-        this.publisher = publisher;
-        this.image = image;
-        this.pdf = pdf;
         this.category = category;
+        this.image = image;
+        this.fileName = fileName;
+        this.filePath = filePath;
+    }
+
+    public Book(String bookname, String author, String category, byte[] image, String fileName, String filePath) {
+        this.bookname = bookname;
+        this.author = author;
+        this.category = category;
+        this.image = image;
+        this.fileName = fileName;
+        this.filePath = filePath;
     }
 
     public Book() {
     }
+
 
     //getters and setters
 
@@ -68,12 +81,12 @@ public class Book {
         this.author = author;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public String getCategory() {
+        return category;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public byte[] getImage() {
@@ -84,19 +97,19 @@ public class Book {
         this.image = image;
     }
 
-    public byte[] getPdf() {
-        return pdf;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setPdf(byte[] pdf) {
-        this.pdf = pdf;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getCategory() {
-        return category;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

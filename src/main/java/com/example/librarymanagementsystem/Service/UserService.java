@@ -13,6 +13,9 @@ public interface UserService extends UserDetailsService {
     //to save user to database- registration process
     User save(RegistrationDTO registrationDTO);
 
+    void update(String blacklist, Long id);
+
+    void saveOrUpdate(User user);
 
     //Admin- delete user by id
     void deleteFile(Long id);

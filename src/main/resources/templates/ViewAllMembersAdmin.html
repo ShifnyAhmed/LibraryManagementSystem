@@ -53,7 +53,14 @@
 </nav>
 <!--End of header-->
 
-
+<div align="center">
+    <div th:if="${param.blacklistsuccess}">
+        <div class="alert alert-success">Member Was Blacklisted Successfully !</div>
+    </div>
+    <div th:if="${param.unsuccess}">
+        <div class="alert alert-danger">Something went wrong when blacklisting member !</div>
+    </div>
+</div>
 <br>
 <div align="center">
     <h5>Registered Members Of Showcase Bookstore</h5>
@@ -88,7 +95,7 @@
                     <a href="#" class="btn btn-success" style="width: 100px" >Remove</a>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-success" style="width: 150px" >Add to Blacklist</a>
+                    <a th:href="@{/admin/addblacklistpage/{id}(id=${User.getId()})}" class="btn btn-success" style="width: 150px" >Add to Blacklist</a>
                 </td>
 
             </tr>

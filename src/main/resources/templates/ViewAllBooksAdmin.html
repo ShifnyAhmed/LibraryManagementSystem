@@ -55,7 +55,20 @@
 
 <div class="container mt-5">
     <div class="row">
-
+        <div align="center">
+            <div th:if="${param.deletesuccess}">
+                <div class="alert alert-success">Book deleted Successfully!</div>
+            </div>
+            <div th:if="${param.unsuccess}">
+                <div class="alert alert-danger">Something Went Wrong !</div>
+            </div>
+            <div th:if="${param.editsuccess}">
+                <div class="alert alert-success">Book Details Updated</div>
+            </div>
+            <div th:if="${param.editunsuccess}">
+                <div class="alert alert-warning">An Error Occured, The Book Name You Entered Might Already Exist</div>
+            </div>
+        </div>
 
         <!--        Content in middle-->
         <h1>All Books</h1>
@@ -78,8 +91,8 @@
                 <td th:text="${Book.getBookname()}"></td>
                 <td th:text="${Book.getAuthor()}"></td>
                 <td th:text="${Book.getCategory()}"></td>
-                <td><a href="#" class="btn btn-success">Edit Book</a></td>
-                <td><a href="#" class="btn btn-success">Remove Book</a></td>
+                <td><a th:href="@{/admin/editbookpage/{id}(id=${Book.getId()})}" class="btn btn-success">Edit Book</a></td>
+                <td><a th:href="@{/admin/deletebookpage/{id}(id=${Book.getId()})}" class="btn btn-success">Remove Book</a></td>
             </tr>
             </tbody>
         </table>
@@ -98,10 +111,10 @@
 </body>
 
 
-
+<br><br><br><br>
 
 <!--Footer-->
-<div class="mt-5 p-4 bg-dark text-white text-center fixed-bottom">
+<div class="mt-5 p-4 bg-dark text-white text-center ">
     <p>Showcase 2022</p>
 
 </div>

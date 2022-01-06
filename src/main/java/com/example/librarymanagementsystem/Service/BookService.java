@@ -12,4 +12,6 @@ public interface BookService {
     List<Book> getAllBooks();
 
     //boolean checkIfBookExist(String book_name);
+
+    void deleteBook(Long id);
 }

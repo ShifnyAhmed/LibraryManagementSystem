@@ -3,6 +3,7 @@ package com.example.librarymanagementsystem.Controller;
 import com.example.librarymanagementsystem.Model.Book;
 import com.example.librarymanagementsystem.Model.Notification;
 import com.example.librarymanagementsystem.Model.User;
+import com.example.librarymanagementsystem.Repository.BookRepository;
 import com.example.librarymanagementsystem.Repository.UserRepository;
 import com.example.librarymanagementsystem.Service.BookService;
 import com.example.librarymanagementsystem.Service.NotificationService;
@@ -45,6 +46,9 @@ public class AdminController {
 
     @Autowired
     BookService bookService;
+
+    @Autowired
+    BookRepository bookRepository;
 
     //displays all the members of showcase bookstore who are not blacklisted
     @RequestMapping(value = "/admin/viewallmembers")
@@ -364,7 +368,7 @@ public class AdminController {
             e.printStackTrace();
         }
 
-        return "redirect:/supplier/adddrugpage?unsuccess";
+        return "redirect:/admin/addbookpage?unsuccess";
     }
 
 //    -------------------------------------------------------------------------------------------------
@@ -381,5 +385,139 @@ public class AdminController {
         model.addAttribute("useremail",userDetails);
 
         return "ViewAllBooksAdmin";
+    }
+
+    //    ------------------------------------------------------------------------------------------------
+
+    //display edit book page
+    @GetMapping(value = "/admin/editbookpage/{id}")
+    public String EditBookButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<Book> view_edit_book = bookRepository.findById(id);
+
+        model.addAttribute("id",view_edit_book.get().getId());
+        model.addAttribute("name",view_edit_book.get().getBookname());
+        model.addAttribute("author",view_edit_book.get().getAuthor());
+        model.addAttribute("category",view_edit_book.get().getCategory());
+        model.addAttribute("filename",view_edit_book.get().getFileName());
+        model.addAttribute("filepath",view_edit_book.get().getFilePath());
+        model.addAttribute("image",view_edit_book.get().getImage());
+
+        //redirecting to EditDrugSupplier html page
+        return "EditBookAdmin";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    @PostMapping(value = "/admin/editbook")
+    public String EditBook(@Valid Book book, @RequestParam("name")final String book_name,
+                          @RequestParam("author")final String book_author,
+                          @RequestParam("file")final MultipartFile file,
+                           @RequestParam("filename")final String book_filename,
+                           @RequestParam("filepath")final String book_filepath,
+                          @RequestParam("category") final String book_category,
+                            @RequestParam("image") final byte[] image) {
+
+
+        String Upload_Directory =System.getProperty("user.dir")+"/src/main/resources/static/uploads/";
+        try {
+
+            if(book == null) {
+
+                return "redirect:/admin/viewallbooks?unsuccess";
+
+            }
+
+            if(file != null)
+            {
+                String file_name=file.getOriginalFilename();
+                String file_path= Paths.get(Upload_Directory,file_name).toString();
+
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(file_path)));
+                stream.write(file.getBytes());
+                stream.close();
+
+                byte[] image_data=file.getBytes();
+                String base64_Encoded_Image = Base64.encodeBase64String(image_data);
+
+
+                book.setBookname(book_name);
+                book.setAuthor(book_author);
+                book.setImage(base64_Encoded_Image.getBytes(StandardCharsets.UTF_8));
+                book.setFileName(file_name);
+                book.setFilePath(file_path);
+                book.setCategory(book_category);
+
+                boolean status = bookService.AddBook(book);
+
+
+
+            //displays success msg if status = true (saved the book)
+            if(status)
+            {
+                return "redirect:/admin/viewallbooks?editsuccess";
+            }
+        }//end of if file not eql to null
+            else {
+
+                //this part is currently not used
+                book.setBookname(book_name);
+                book.setAuthor(book_author);
+                book.setImage(image);
+                book.setFileName(book_filename);
+                book.setFilePath(book_filepath);
+                book.setCategory(book_category);
+
+                boolean status = bookService.AddBook(book);
+                //displays success msg if status = true (saved the book)
+                    if(status)
+                    {
+                    return "redirect:/admin/viewallbooks?editsuccess";
+                    }
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return "redirect:/admin/viewallbooks?editunsuccess";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //This displays a confirmation page to delete book
+    @GetMapping(value = "/admin/deletebookpage/{id}")
+    public String DeleteBookButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<Book> delete_book = bookRepository.findById(id);
+
+        model.addAttribute("id",delete_book.get().getId());
+        model.addAttribute("name",delete_book.get().getBookname());
+        model.addAttribute("author",delete_book.get().getAuthor());
+        model.addAttribute("category",delete_book.get().getCategory());
+        model.addAttribute("filename",delete_book.get().getFileName());
+        model.addAttribute("filepath",delete_book.get().getFilePath());
+        model.addAttribute("image",delete_book.get().getImage());
+
+
+        return "DeleteBookAdmin";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //this deletes the selected book from book table in database
+    @GetMapping(value = "/admin/deletebook/{id}")
+    public String deleteBook(@RequestParam("id") Long id)
+    {
+        try{
+            bookService.deleteBook(id);
+            return  "redirect:/admin/viewallbooks?deletesuccess";
+        }
+        catch (Exception e){
+            return  "redirect:/supplier/viewallbooks?deletesuccess";
+        }
+
     }
 }

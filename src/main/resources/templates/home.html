@@ -40,7 +40,7 @@
                     <a class="nav-link" href="#">View Favourite</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Notification</a>
+                    <a class="nav-link" th:href="@{/user/viewmynotification/{email}(email=${useremail.getUsername()})}">View Notification</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">View Profile</a>

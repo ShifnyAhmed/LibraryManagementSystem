@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Transactional
@@ -31,5 +32,15 @@ public class NotificationImpl implements NotificationService{
             return false;
         }
         return false;
+    }
+
+    @Override
+    public List<Notification> ViewAllNotificationByEmail(String email) {
+        return notificationRepository.findNotificationByEmailOrderByIdDesc(email);
+    }
+
+    @Override
+    public void ClearAllNotificationByEmail(String email) {
+        notificationRepository.deleteAllByEmail(email);
     }
 }

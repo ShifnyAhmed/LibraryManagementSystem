@@ -74,7 +74,7 @@
             <tbody>
             <tr th:each="Book : ${All_books}">
                 <td  th:text="${Book.getId()}" ></td>
-                <td><img th:src="@{${'../src/main/resources/static/uploads/'+Book.getFileName()}}" width="250" height="250"></td>
+                <td><img th:src="@{${'../static/uploads/'+Book.getFileName()}}" width="250" height="250" alt="Cover Pic"></td>
                 <td th:text="${Book.getBookname()}"></td>
                 <td th:text="${Book.getAuthor()}"></td>
                 <td th:text="${Book.getCategory()}"></td>

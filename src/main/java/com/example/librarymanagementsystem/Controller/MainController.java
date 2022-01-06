@@ -39,11 +39,11 @@ public class MainController {
         return "logout";
     }
 
-    @GetMapping("/error")
-    public String Error(Model model)
-    {
-        //this gets displayed when error occurs
-        return "error";
-    }
+//    @GetMapping("/error")
+//    public String Error(Model model)
+//    {
+//        //this gets displayed when error occurs
+//        return "error";
+//    }
 
 }

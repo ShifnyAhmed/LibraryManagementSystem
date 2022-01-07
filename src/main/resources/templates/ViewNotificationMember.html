@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>My Notifications</title>
     <meta charset="utf-8">
@@ -10,94 +10,101 @@
 </head>
 <body>
 
-<div class="p-5 bg-dark text-white text-center">
-    <h1><i><b>Show Case Book Store</b></i></h1>
-    <p>Did Anyone Say Books !</p>
-</div>
+<div sec:authorize="hasAnyAuthority('ROLE_MEMBER')">
 
 
-
-<!--Header-->
-<nav class="navbar navbar-expand-sm bg-success navbar-dark">
-    <div class="container-fluid">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link active" href="#"><b>SHOWCASE</b></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Pending Reservation</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Reservation History</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Favourite</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/user/viewmynotification/{email}(email=${useremail.getUsername()})}">View Notification</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Profile</a>
-            </li>
-
-        </ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-link">
-                <a class="nav-link" style="color: black" th:href="@{/logout}"><b>Log Out</b></a>
-            </li>
-        </ul>
-
+    <div class="p-5 bg-dark text-white text-center">
+        <h1><i><b>Show Case Book Store</b></i></h1>
+        <p>Did Anyone Say Books !</p>
     </div>
-</nav>
-<!--End of header-->
 
-<div class="container mt-5">
-    <div class="row">
-        <div align="center">
-            <div th:if="${param.clearnotificationssuccess}">
-                <div class="alert alert-success">All Clear!</div>
-            </div>
-            <div th:if="${param.clearnotificationsunsuccess}">
-                <div class="alert alert-danger">Something Went Wrong, Could not clear all notifications !</div>
-            </div>
+
+
+    <!--Header-->
+    <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#"><b>SHOWCASE</b></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Pending Reservation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Reservation History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Favourite</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/user/viewmynotification/{email}(email=${useremail.getUsername()})}">View Notification</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Profile</a>
+                </li>
+
+            </ul>
+
+            <ul class="navbar-nav">
+                <li class="nav-link">
+                    <a class="nav-link" style="color: black" th:href="@{/logout}"><b>Log Out</b></a>
+                </li>
+            </ul>
 
         </div>
+    </nav>
+    <!--End of header-->
 
-        <!--        Content in middle-->
-        <h1>Notification</h1>
-        <div align="center" style="padding-left: 1230px">
-            <a th:href="@{/user/clearallnotification/{email}(email=${useremail.getUsername()})}" class="btn btn-success" style="width: 90px" >Clear All</a>
+    <div class="container mt-5">
+        <div class="row">
+            <div align="center">
+                <div th:if="${param.clearnotificationssuccess}">
+                    <div class="alert alert-success">All Clear!</div>
+                </div>
+                <div th:if="${param.clearnotificationsunsuccess}">
+                    <div class="alert alert-danger">Something Went Wrong, Could not clear all notifications !</div>
+                </div>
+
+            </div>
+
+            <!--        Content in middle-->
+            <h1>Notification</h1>
+            <div align="center" style="padding-left: 1230px">
+                <a th:href="@{/user/clearallnotification/{email}(email=${useremail.getUsername()})}" class="btn btn-success" style="width: 90px" >Clear All</a>
+            </div>
+
+
+            <table class="table">
+                <thead class="thead-dark"  style="padding-bottom: 30px">
+                <tr>
+
+                    <th scope="col">Message</th>
+                    <th scope="col">Date And Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="Notification : ${member_notification}">
+                    <td  th:text="${Notification.getMessage()}" ></td>
+                    <td th:text="${Notification.getDate()}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <!--    End of Content in middle-->
+
+
+
         </div>
-
-
-        <table class="table">
-            <thead class="thead-dark"  style="padding-bottom: 30px">
-            <tr>
-
-                <th scope="col">Message</th>
-                <th scope="col">Date And Time</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="Notification : ${member_notification}">
-                <td  th:text="${Notification.getMessage()}" ></td>
-                <td th:text="${Notification.getDate()}"></td>
-               </tr>
-            </tbody>
-        </table>
-        <!--    End of Content in middle-->
-
-
-
     </div>
-</div>
 
 
+
+
+
+</div><!--End Of Member Authorization-->
 
 
 

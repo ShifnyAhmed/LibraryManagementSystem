@@ -112,6 +112,27 @@
 
 
 
+<!--If logged in user is not admin-->
+<div sec:authorize="hasAnyAuthority('ROLE_MEMBER')">
+
+    <!--Nav Bar (header)-->
+    <nav class="navbar navbar-expand-sm bg-success navbar-dark" style="background-color: #A8E4A0;">
+        <a class="navbar-brand" href="#" > <b>SHOWCASE - No Permission To View This Page</b> </a>
+    </nav>
+    <!--header end-->
+
+    <div align="center">
+
+        <img src="https://techlazza.com/wp-content/uploads/2021/03/for-to-fix-403-main.jpg" width="1200px" class="align-content-xxl-stretch" alt="403">
+
+    </div> <!--End of div align="center"  -->
+
+</div>
+<!--End Of -If logged in user is not admin-->
+
+
+
+
 
 
 

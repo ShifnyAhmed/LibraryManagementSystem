@@ -46,7 +46,7 @@
                     <a class="nav-link" th:href="@{/user/contactadminpage}">Contact Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Profile</a>
+                    <a class="nav-link" th:href="@{/user/viewprofile/{email}(email=${useremail.getUsername()})}">View Profile</a>
                 </li>
 
             </ul>

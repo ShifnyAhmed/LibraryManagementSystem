@@ -2,8 +2,11 @@ package com.example.librarymanagementsystem.Controller;
 
 import com.example.librarymanagementsystem.Model.Contact;
 import com.example.librarymanagementsystem.Model.Notification;
+import com.example.librarymanagementsystem.Model.User;
+import com.example.librarymanagementsystem.Repository.UserRepository;
 import com.example.librarymanagementsystem.Service.ContactService;
 import com.example.librarymanagementsystem.Service.NotificationService;
+import com.example.librarymanagementsystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +28,9 @@ public class MemberController {
 
     @Autowired
     ContactService contactService;
+
+    @Autowired
+    UserService userService;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -121,5 +127,23 @@ public class MemberController {
         }
 
         return "redirect:/user/contactadminpage?contactunsuccess";
+    }
+
+//    ------------------------------------------------------------------------------------------------
+
+    //displays all details of the logged in user- view profile
+    @RequestMapping(value = "/user/viewprofile/{email}")
+    public String viewProfile(@PathVariable("email") String email, Model model)
+    {
+        User view_profile = userService.getUserByEmail(email);
+
+        model.addAttribute("view_profile",view_profile);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to ViewProfile html page
+        return "ViewProfileMember";
     }
 }

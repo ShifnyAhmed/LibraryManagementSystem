@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Add Book</title>
     <meta charset="utf-8">
@@ -10,171 +10,180 @@
 </head>
 <body>
 
-<div class="p-5 bg-dark text-white text-center">
-    <h1><i><b>Show Case Book Store</b></i></h1>
-    <p>Did Anyone Say Books !</p>
-</div>
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
 
 
 
-<!--Header-->
-<nav class="navbar navbar-expand-sm bg-success navbar-dark">
-    <div class="container-fluid">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link active" th:href="@{/admin/viewallbooks}"><b>SHOWCASE-Admin</b></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/viewallbooks}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/addbookpage}">Add Book</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Lend Request</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/viewallmembers}">View Members</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/viewblacklistmembers}">View Blacklisted Members</a>
-            </li>
-
-        </ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-link">
-                <a class="nav-link" style="color: black" th:href="@{/logout}"><b>Log Out</b></a>
-            </li>
-        </ul>
-
+    <div class="p-5 bg-dark text-white text-center">
+        <h1><i><b>Show Case Book Store</b></i></h1>
+        <p>Did Anyone Say Books !</p>
     </div>
-</nav>
-<!--End of header-->
 
-<div class="container mt-5">
-    <div class="row">
 
-        <!--content in left-->
-        <div class="col-sm-4">
-            <h2><i>Trending Books</i></h2>
-            <br>
-            <!-- Slide Show -->
-            <section style="padding-left: 10px">
 
-                <img class="mySlides1" src="https://i.pinimg.com/474x/49/f5/6c/49f56c9cb4d84b536ff9f0d4ce856b66--video-game-posters-minimalist-poster.jpg"
-                     style="width:47%" alt="">
+    <!--Header-->
+    <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/viewallbooks}"><b>SHOWCASE-Admin</b></a>
+                </li>
 
-                <img class="mySlides" src="https://static.wixstatic.com/media/114ec9_5d7062162f674ca9ba08a3aed25f3154~mv2.jpg/v1/fill/w_408,h_654,al_c,q_80,usm_0.66_1.00_0.01/Copy%20of%20Contemporary%20Fiction%20Night%20Time%20.webp"
-                     style="width:47%" alt="">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/viewallbooks}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/addbookpage}">Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View Lend Request</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/viewallmembers}">View Members</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/viewblacklistmembers}">View Blacklisted Members</a>
+                </li>
 
-                <img class="mySlides1" src="https://media.npr.org/assets/img/2021/09/17/81u7u9aaj9s_custom-fd70725a480eb5dc9b54bd573671ff237120cf90.jpg?s=1400"
-                     style="width:47%" alt="">
+            </ul>
 
-                <img class="mySlides" src="https://www.designbookcover.pt/uploads/media/photos/cache/b1_only_words_72_media_huge_thumbnail.jpg"
-                     style="width:47%" alt="">
+            <ul class="navbar-nav">
+                <li class="nav-link">
+                    <a class="nav-link" style="color: black" th:href="@{/logout}"><b>Log Out</b></a>
+                </li>
+            </ul>
 
-                <img class="mySlides1" src="https://www.promosuns.com/wp-content/uploads/2021/03/design-for-writers-book-cover-tf-2-a-million-to-one.jpg"
-                     style="width:47%" alt="">
-
-                <img class="mySlides" src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1470082995i/29056083.jpg"
-                     style="width:47%" alt="">
-                <img class="mySlides1" src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1582759969i/40097951.jpg"
-                     style="width:47%" alt="">
-                <img class="mySlides" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1573742396l/52078691.jpg"
-                     style="width:47%" alt="">
-            </section>
-            <!--End of  Slide Show -->
         </div>
-        <!--end of content in left-->
+    </nav>
+    <!--End of header-->
 
+    <div class="container mt-5">
+        <div class="row">
 
-
-        <!--        Content in middle-->
-        <div class="col-sm-8" style="padding-left: 80px">
-
-
-            <div th:if="${param.success}">
-                <div class="alert alert-success" style="width: 300px">Book Added Successfully !</div>
-            </div>
-            <div th:if="${param.unsuccess}">
-                <div class="alert alert-danger" style="width: 300px">Something went Wrong !</div>
-            </div>
-
-            <h2>Add New Book</h2>
-
-
-            <form th:action="@{/admin/addbook}" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-
-                    <label style="padding-top: 10px" for="name">Book Name</label>
-                    <input type="text"
-                           class="form-control"
-                           id="name"
-                           name="name"
-                           style="width: 300px"
-                           placeholder="Book Name"
-                           required>
-
-                    <label style="padding-top: 10px" for="author">Author</label>
-                    <input type="text"
-                           class="form-control"
-                           id="author"
-                           name="author"
-                           style="width: 300px"
-                           placeholder="Book Author"
-                           required>
-
-                    <label style="padding-top: 10px" for="category">Category</label>
-                    <select style="width: 300px" id="category"  class="form-select form-select-lg mb-3"  name="category" required>
-                        <option value="Adventure">Adventure</option>
-                        <option value="Fantasy">Fantasy</option>
-                        <option value="Fiction">Fiction</option>
-                        <option value="Non-Fiction">Non-Fiction</option>
-                        <option value="Horror">Horror</option>
-                        <option value="Literary Fiction">Literary Fiction</option>
-                        <option value="Romance">Romance</option>
-                        <option value="Sci-Fi">Sci-Fi</option>
-                        <option value="Thrillers">Thrillers</option>
-                        <option value="Autobiographies">Autobiographies</option>
-                        <option value="Cookbooks">Cookbooks</option>
-                        <option value="Essays">Essays</option>
-                        <option value="History">History</option>
-                        <option value="Memoir">Memoir</option>
-                        <option value="Poetry">Poetry</option>
-                        <option value="Crime">Crime</option>
-                        <option value="Crime Thriller">Crime Thriller</option>
-                        <option value="Action">Action</option>
-                        <option value="Action Adventure">Action Adventure</option>
-
-                    </select>
-
-                    <label for="file">Select Thumbnail </label>
-                    <input type="file"
-                           class="form-control"
-                           name="file"
-                           id="file"
-                           style="width: 300px"
-                           required>
-                </div>
+            <!--content in left-->
+            <div class="col-sm-4">
+                <h2><i>Trending Books</i></h2>
                 <br>
-                <div style="padding-left: 100px;">
-                    <button style="width: 100px" type="submit" class="btn btn-success">Add</button>
+                <!-- Slide Show -->
+                <section style="padding-left: 10px">
+
+                    <img class="mySlides1" src="https://i.pinimg.com/474x/49/f5/6c/49f56c9cb4d84b536ff9f0d4ce856b66--video-game-posters-minimalist-poster.jpg"
+                         style="width:47%" alt="">
+
+                    <img class="mySlides" src="https://static.wixstatic.com/media/114ec9_5d7062162f674ca9ba08a3aed25f3154~mv2.jpg/v1/fill/w_408,h_654,al_c,q_80,usm_0.66_1.00_0.01/Copy%20of%20Contemporary%20Fiction%20Night%20Time%20.webp"
+                         style="width:47%" alt="">
+
+                    <img class="mySlides1" src="https://media.npr.org/assets/img/2021/09/17/81u7u9aaj9s_custom-fd70725a480eb5dc9b54bd573671ff237120cf90.jpg?s=1400"
+                         style="width:47%" alt="">
+
+                    <img class="mySlides" src="https://www.designbookcover.pt/uploads/media/photos/cache/b1_only_words_72_media_huge_thumbnail.jpg"
+                         style="width:47%" alt="">
+
+                    <img class="mySlides1" src="https://www.promosuns.com/wp-content/uploads/2021/03/design-for-writers-book-cover-tf-2-a-million-to-one.jpg"
+                         style="width:47%" alt="">
+
+                    <img class="mySlides" src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1470082995i/29056083.jpg"
+                         style="width:47%" alt="">
+                    <img class="mySlides1" src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1582759969i/40097951.jpg"
+                         style="width:47%" alt="">
+                    <img class="mySlides" src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1573742396l/52078691.jpg"
+                         style="width:47%" alt="">
+                </section>
+                <!--End of  Slide Show -->
+            </div>
+            <!--end of content in left-->
+
+
+
+            <!--        Content in middle-->
+            <div class="col-sm-8" style="padding-left: 80px">
+
+
+                <div th:if="${param.success}">
+                    <div class="alert alert-success" style="width: 300px">Book Added Successfully !</div>
+                </div>
+                <div th:if="${param.unsuccess}">
+                    <div class="alert alert-danger" style="width: 300px">Something went Wrong !</div>
                 </div>
 
-            </form>
+                <h2>Add New Book</h2>
+
+
+                <form th:action="@{/admin/addbook}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+
+                        <label style="padding-top: 10px" for="name">Book Name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
+                               style="width: 300px"
+                               placeholder="Book Name"
+                               required>
+
+                        <label style="padding-top: 10px" for="author">Author</label>
+                        <input type="text"
+                               class="form-control"
+                               id="author"
+                               name="author"
+                               style="width: 300px"
+                               placeholder="Book Author"
+                               required>
+
+                        <label style="padding-top: 10px" for="category">Category</label>
+                        <select style="width: 300px" id="category"  class="form-select form-select-lg mb-3"  name="category" required>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Literary Fiction">Literary Fiction</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Thrillers">Thrillers</option>
+                            <option value="Autobiographies">Autobiographies</option>
+                            <option value="Cookbooks">Cookbooks</option>
+                            <option value="Essays">Essays</option>
+                            <option value="History">History</option>
+                            <option value="Memoir">Memoir</option>
+                            <option value="Poetry">Poetry</option>
+                            <option value="Crime">Crime</option>
+                            <option value="Crime Thriller">Crime Thriller</option>
+                            <option value="Action">Action</option>
+                            <option value="Action Adventure">Action Adventure</option>
+
+                        </select>
+
+                        <label for="file">Select Thumbnail </label>
+                        <input type="file"
+                               class="form-control"
+                               name="file"
+                               id="file"
+                               style="width: 300px"
+                               required>
+                    </div>
+                    <br>
+                    <div style="padding-left: 100px;">
+                        <button style="width: 100px" type="submit" class="btn btn-success">Add</button>
+                    </div>
+
+                </form>
+
+
+            </div>
+            <!--    End of Content in middle-->
+
 
 
         </div>
-        <!--    End of Content in middle-->
-
-
-
     </div>
+
+
+
+
+
 </div>
-
-
+<!--end of admin authorization-->
 
 
 

@@ -1,11 +1,14 @@
 package com.example.librarymanagementsystem.Controller;
 
 import com.example.librarymanagementsystem.Model.Book;
+import com.example.librarymanagementsystem.Model.Contact;
 import com.example.librarymanagementsystem.Model.Notification;
 import com.example.librarymanagementsystem.Model.User;
 import com.example.librarymanagementsystem.Repository.BookRepository;
+import com.example.librarymanagementsystem.Repository.ContactRepository;
 import com.example.librarymanagementsystem.Repository.UserRepository;
 import com.example.librarymanagementsystem.Service.BookService;
+import com.example.librarymanagementsystem.Service.ContactService;
 import com.example.librarymanagementsystem.Service.NotificationService;
 import com.example.librarymanagementsystem.Service.UserService;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -22,6 +25,7 @@ import javax.validation.Valid;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -49,6 +53,12 @@ public class AdminController {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    ContactService contactService;
+
+    @Autowired
+    ContactRepository contactRepository;
 
     //displays all the members of showcase bookstore who are not blacklisted
     @RequestMapping(value = "/admin/viewallmembers")
@@ -520,4 +530,53 @@ public class AdminController {
         }
 
     }
+
+//---------------------------------------------------------------------------------------------------------
+
+    //displays all the contact messages-admin
+    @RequestMapping(value = "/admin/allmessages")
+    public String viewAllMessage(Model model)
+    {
+        List<Contact> adminMessageList = contactRepository.findAll();
+
+        model.addAttribute("adminMessageList",adminMessageList);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to ViewAllUsersAdmin html page
+        return "ViewAllMessageAdmin";
+    }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    //this deletes the selected message
+    @GetMapping(value = "/admin/deletemessage/{id}")
+    public String deleteMessage(@Valid Notification notification,@PathVariable("id") Long id) throws IOException {
+
+        String notify = "Your Message Has Been Read By The Admin And Resolved";
+
+        contactService.deleteMessage(id);
+
+            Optional<Contact> cntct = contactRepository.findById(id);
+
+            if(cntct.isPresent())
+            {
+                Contact contact = cntct.get();
+
+                String member_email = contact.getEmail();
+
+
+                notification.setMessage(notify);
+                notification.setDate(dateTimeFormatter.format(localDateTime));
+                notification.setEmail(member_email);
+
+                notificationService.AddNotification(notification);
+            }
+
+
+        return  "redirect:/admin/allmessages?deletemsgsuccess";
+    }
+
 }

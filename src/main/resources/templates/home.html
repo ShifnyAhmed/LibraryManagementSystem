@@ -43,6 +43,9 @@
                     <a class="nav-link" th:href="@{/user/viewmynotification/{email}(email=${useremail.getUsername()})}">View Notification</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" th:href="@{/user/contactadminpage}">Contact Admin</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#">View Profile</a>
                 </li>
 
@@ -110,6 +113,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/admin/viewblacklistmembers}">View Blacklisted Members</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/allmessages}">View Messages</a>
                 </li>
 
             </ul>

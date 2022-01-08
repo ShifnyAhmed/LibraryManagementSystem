@@ -31,4 +31,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     void updateUserLevel(@Param("level") String level, @Param("id") Long id);
 
+
+
+    //used to edit profile
+    @Modifying
+    @Query(value = "UPDATE user u set fullname =?1, mobile=?2, email=?3, dateofbirth=?4 where u.id = ?5",
+            nativeQuery = true)
+    void updateUser(@Param("fullname") String fullname,@Param("mobile") String mobile,@Param("email") String email, @Param("dateofbirth") String dateofbirth, @Param("id") Long id);
+
+
 }

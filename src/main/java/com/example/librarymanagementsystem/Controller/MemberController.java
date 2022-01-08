@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class MemberController {
@@ -31,6 +32,9 @@ public class MemberController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -146,4 +150,73 @@ public class MemberController {
         //redirecting to ViewProfile html page
         return "ViewProfileMember";
     }
+
+    //    ------------------------------------------------------------------------------------------------
+
+    //Gets the user details and adding it to a model to access it in EditProfile page
+    @GetMapping(value = "/user/editprofile/{id}")
+    public String EditProfileButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<User> view_profile = userRepository.findById(id);
+
+        model.addAttribute("id",view_profile.get().getId());
+        model.addAttribute("name",view_profile.get().getFullname());
+        model.addAttribute("email",view_profile.get().getEmail());
+        model.addAttribute("contact",view_profile.get().getMobile());
+        model.addAttribute("password",view_profile.get().getPassword());
+        model.addAttribute("dob",view_profile.get().getDateofbirth());
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to EditProfile html page
+        return "EditProfileMember";
+    }
+
+    //    -------------------------------------------------------------------------------------------------
+
+
+    //Updates the user details with entered values
+    @PostMapping(value = "/user/updateuser")
+    public String UpdateUser(@RequestParam("user_id")Long id, @RequestParam("email")String email,
+                             @RequestParam("name") String name,
+                             @RequestParam("contact") String contact,
+                             @RequestParam("dateofbirth") String dateofbirth,
+                             @RequestParam("dateofbirthold") String dateofbirth_old,Model model) {
+
+
+        try {
+
+            if(dateofbirth.isEmpty())
+            {
+                //updating the user details
+                userService.EditProfile(name,contact,email,dateofbirth_old,id);
+
+            }
+            else{
+
+                //updating the user details
+                userService.EditProfile(name,contact,email,dateofbirth,id);
+
+
+            }
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return "ViewProfileMember";
+
+        }
+
+        //redirecting to ViewProfileMember html page
+        return "ViewProfileMember";
+    }
+
+
+
 }

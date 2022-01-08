@@ -79,6 +79,12 @@ public class UserServiceImpl implements UserService{
         userRepository.updateUserLevel(level,id);
     }
 
+    @Transactional
+    @Override
+    public void EditProfile(String fullname, String mobile, String email, String dateofbirth, Long id) {
+        userRepository.updateUser(fullname, mobile, email, dateofbirth, id);
+    }
+
 
     @Override
     public void saveOrUpdate(User user) {

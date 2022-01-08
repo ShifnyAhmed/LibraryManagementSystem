@@ -17,6 +17,9 @@ public interface UserService extends UserDetailsService {
 
     void promoteMember(String level, Long id);
 
+    void EditProfile(String fullname,String mobile,String email, String dateofbirth, Long id);
+
+
     void saveOrUpdate(User user);
 
     //Admin- delete user by id

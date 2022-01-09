@@ -1,9 +1,11 @@
 package com.example.librarymanagementsystem.Controller;
 
+import com.example.librarymanagementsystem.Model.Book;
 import com.example.librarymanagementsystem.Model.Contact;
 import com.example.librarymanagementsystem.Model.Notification;
 import com.example.librarymanagementsystem.Model.User;
 import com.example.librarymanagementsystem.Repository.UserRepository;
+import com.example.librarymanagementsystem.Service.BookService;
 import com.example.librarymanagementsystem.Service.ContactService;
 import com.example.librarymanagementsystem.Service.NotificationService;
 import com.example.librarymanagementsystem.Service.UserService;
@@ -35,6 +37,9 @@ public class MemberController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    BookService bookService;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -174,7 +179,7 @@ public class MemberController {
         return "EditProfileMember";
     }
 
-    //    -------------------------------------------------------------------------------------------------
+//    -------------------------------------------------------------------------------------------------
 
 
     //Updates the user details with entered values
@@ -217,6 +222,20 @@ public class MemberController {
         return "ViewProfileMember";
     }
 
+//    -------------------------------------------------------------------------------------------------
 
+    @GetMapping(value = "/user/viewallbooks")
+    public String viewAllBooks(Model model)
+    {
+
+        List<Book> member_all_books = bookService.getAllBooks();
+
+        model.addAttribute("member_all_books",member_all_books);
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        return "ViewAllBooksMember";
+    }
 
 }

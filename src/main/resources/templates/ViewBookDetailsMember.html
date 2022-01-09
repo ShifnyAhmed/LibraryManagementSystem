@@ -165,7 +165,7 @@
                                     <tbody>
                                     <tr th:each="Book: ${view_book_details}">
                                         <td>
-                                            <a href="#" class="btn" style="background-color: #009E60; color: white;" >Read Online</a>
+                                            <a th:href="@{/user/readbook/{id}(id=${view_book_details.get().getId()})}" class="btn" style="background-color: #009E60; color: white;" >Read Online</a>
                                         </td>
 
                                     </tr>

@@ -250,17 +250,6 @@ public class MemberController {
     {
         Optional<Book> view_book_details = bookRepository.findById(id);
 
-        model.addAttribute("id",view_book_details.get().getId());
-        model.addAttribute("name",view_book_details.get().getBookname());
-        model.addAttribute("author",view_book_details.get().getAuthor());
-        model.addAttribute("category",view_book_details.get().getCategory());
-        model.addAttribute("filename",view_book_details.get().getFileName());
-        model.addAttribute("filepath",view_book_details.get().getFilePath());
-        model.addAttribute("image",view_book_details.get().getImage());
-        model.addAttribute("pdf_filepath",view_book_details.get().getPdfPath());
-        model.addAttribute("pdf_filename",view_book_details.get().getPdfName());
-        model.addAttribute("pdf",view_book_details.get().getPdfPath());
-
         model.addAttribute("view_book_details",view_book_details);
 
 
@@ -271,5 +260,27 @@ public class MemberController {
         //redirecting to EditDrugSupplier html page
         return "ViewBookDetailsMember";
     }
+
+    //    ------------------------------------------------------------------------------------------------
+
+
+    //read book online
+    @GetMapping(value = "/user/readbook/{id}")
+    public String ReadBookButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<Book> read_online = bookRepository.findById(id);
+
+        model.addAttribute("pdf_name",read_online.get().getPdfName());
+
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to EditDrugSupplier html page
+        return "ReadOnlineMember";
+    }
+
+
 
 }

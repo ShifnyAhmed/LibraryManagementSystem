@@ -88,7 +88,7 @@
                     <td th:text="${Book.getBookname()}"></td>
                     <td th:text="${Book.getAuthor()}"></td>
                     <td th:text="${Book.getCategory()}"></td>
-                    <td><a href="#" class="btn btn-success">View Book</a></td>
+                    <td><a th:href="@{/user/bookdetailspage/{id}(id=${Book.getId()})}" class="btn btn-success">View Book</a></td>
                     <td><a href="#" class="btn btn-success">Reserve Book</a></td>
 
                 </tr>

@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -257,7 +258,7 @@ public class MemberController {
         UserDetails userDetails=(UserDetails)authentication.getPrincipal();
         model.addAttribute("useremail",userDetails);
 
-        //redirecting to EditDrugSupplier html page
+        //redirecting to ViewBookDetailsMember html page
         return "ViewBookDetailsMember";
     }
 
@@ -277,8 +278,40 @@ public class MemberController {
         UserDetails userDetails=(UserDetails)authentication.getPrincipal();
         model.addAttribute("useremail",userDetails);
 
-        //redirecting to EditDrugSupplier html page
+        //redirecting to ReadOnlineMember html page
         return "ReadOnlineMember";
+    }
+
+    //    ------------------------------------------------------------------------------------------------
+
+    //reserve book page
+    @GetMapping(value = "/user/reservebookpage/{id}")
+    public String ReserveBookButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<Book> reserve_book = bookRepository.findById(id);
+
+        model.addAttribute("reserve_book",reserve_book);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        User reserveing_user = userService.getUserByEmail(userDetails.getUsername());
+
+       String blacklist = reserveing_user.getBlacklist();
+
+       //blacklisted members are restricted to reserve books
+       if (Objects.equals(blacklist, "Yes"))
+       {
+           return "redirect:/user/viewallbooks?blacklisted";
+       }
+       else
+       {
+
+           return "ReserveBookMember";
+       }
+
+
     }
 
 

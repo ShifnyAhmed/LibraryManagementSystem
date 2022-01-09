@@ -334,7 +334,8 @@ public class AdminController {
     public String addBook(@Valid Book book, @RequestParam("name")final String book_name,
                           @RequestParam("author")final String book_author,
                           @RequestParam("file")final MultipartFile file,
-                          @RequestParam("category") final String book_category) {
+                          @RequestParam("category") final String book_category,
+                          @RequestParam("pdf_file")final MultipartFile pdf_file) {
 
 
         String Upload_Directory =System.getProperty("user.dir")+"/src/main/resources/static/uploads/";
@@ -346,8 +347,9 @@ public class AdminController {
 
             }
 
-            String file_name=file.getOriginalFilename();
-            String file_path= Paths.get(Upload_Directory,file_name).toString();
+            //image
+            String file_name = file.getOriginalFilename();
+            String file_path = Paths.get(Upload_Directory,file_name).toString();
 
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(file_path)));
             stream.write(file.getBytes());
@@ -357,12 +359,27 @@ public class AdminController {
             String base64_Encoded_Image = Base64.encodeBase64String(image_data);
 
 
+            //pdf
+            String pdf_file_name = pdf_file.getOriginalFilename();
+            String pdf_file_path = Paths.get(Upload_Directory,pdf_file_name).toString();
+
+            BufferedOutputStream stream2 = new BufferedOutputStream(new FileOutputStream(new File(pdf_file_path)));
+            stream2.write(pdf_file.getBytes());
+            stream2.close();
+
+            byte[] pdf_data=pdf_file.getBytes();
+            String base64_Encoded_PDF = Base64.encodeBase64String(pdf_data);
+
+
             book.setBookname(book_name);
             book.setAuthor(book_author);
             book.setImage(base64_Encoded_Image.getBytes(StandardCharsets.UTF_8));
             book.setFileName(file_name);
             book.setFilePath(file_path);
             book.setCategory(book_category);
+            book.setPdfName(pdf_file_name);
+            book.setPdfPath(pdf_file_path);
+            book.setPdf(base64_Encoded_PDF.getBytes(StandardCharsets.UTF_8));
 
             boolean status = bookService.AddBook(book);
 
@@ -412,6 +429,9 @@ public class AdminController {
         model.addAttribute("filename",view_edit_book.get().getFileName());
         model.addAttribute("filepath",view_edit_book.get().getFilePath());
         model.addAttribute("image",view_edit_book.get().getImage());
+        model.addAttribute("pdf_filepath",view_edit_book.get().getPdfPath());
+        model.addAttribute("pdf_filename",view_edit_book.get().getPdfName());
+        model.addAttribute("pdf",view_edit_book.get().getPdfPath());
 
         //redirecting to EditDrugSupplier html page
         return "EditBookAdmin";
@@ -423,10 +443,14 @@ public class AdminController {
     public String EditBook(@Valid Book book, @RequestParam("name")final String book_name,
                           @RequestParam("author")final String book_author,
                           @RequestParam("file")final MultipartFile file,
+                           @RequestParam("pdf_file")final MultipartFile pdf_file,
                            @RequestParam("filename")final String book_filename,
                            @RequestParam("filepath")final String book_filepath,
+                           @RequestParam("pdf_filename")final String book_pdf_filename,
+                           @RequestParam("pdf_filepath")final String book_pdf_filepath,
                           @RequestParam("category") final String book_category,
-                            @RequestParam("image") final byte[] image) {
+                            @RequestParam("image") final byte[] image,
+                            @RequestParam("pdf") final byte[] pdf) {
 
 
         String Upload_Directory =System.getProperty("user.dir")+"/src/main/resources/static/uploads/";
@@ -438,8 +462,42 @@ public class AdminController {
 
             }
 
-            if(file != null)
+            if(file.isEmpty() && pdf_file.isEmpty())
             {
+                //if user has not selected both pdf and image in the edit form
+
+                book.setBookname(book_name);
+                book.setAuthor(book_author);
+                book.setImage(image);
+                book.setFileName(book_filename);
+                book.setFilePath(book_filepath);
+                book.setCategory(book_category);
+                book.setPdf(pdf);
+                book.setPdfPath(book_pdf_filepath);
+                book.setPdfName(book_pdf_filename);
+
+                boolean status = bookService.AddBook(book);
+
+                //displays success msg if status = true (saved the book)
+                if(status)
+                {
+                    return "redirect:/admin/viewallbooks?editsuccess";
+                }
+
+            }
+            else if (pdf_file.isEmpty())
+            {
+                //if user has not selected pdf but has selected image in the edit form
+
+                book.setBookname(book_name);
+                book.setAuthor(book_author);
+                book.setPdf(pdf);
+                book.setPdfPath(book_pdf_filepath);
+                book.setPdfName(book_pdf_filename);
+                book.setCategory(book_category);
+
+
+                //image
                 String file_name=file.getOriginalFilename();
                 String file_path= Paths.get(Upload_Directory,file_name).toString();
 
@@ -450,27 +508,24 @@ public class AdminController {
                 byte[] image_data=file.getBytes();
                 String base64_Encoded_Image = Base64.encodeBase64String(image_data);
 
-
-                book.setBookname(book_name);
-                book.setAuthor(book_author);
                 book.setImage(base64_Encoded_Image.getBytes(StandardCharsets.UTF_8));
                 book.setFileName(file_name);
                 book.setFilePath(file_path);
-                book.setCategory(book_category);
 
                 boolean status = bookService.AddBook(book);
 
 
+                if(status)
+                {
+                    return "redirect:/admin/viewallbooks?editsuccess";
+                }
 
-            //displays success msg if status = true (saved the book)
-            if(status)
-            {
-                return "redirect:/admin/viewallbooks?editsuccess";
+
             }
-        }//end of if file not eql to null
-            else {
+            else if (file.isEmpty())
+            {
+                //if user has not selected image but has selected pdf in the edit form
 
-                //this part is currently not used
                 book.setBookname(book_name);
                 book.setAuthor(book_author);
                 book.setImage(image);
@@ -478,13 +533,80 @@ public class AdminController {
                 book.setFilePath(book_filepath);
                 book.setCategory(book_category);
 
+
+                //pdf
+                String pdf_file_name = pdf_file.getOriginalFilename();
+                String pdf_file_path = Paths.get(Upload_Directory,pdf_file_name).toString();
+
+                BufferedOutputStream stream2 = new BufferedOutputStream(new FileOutputStream(new File(pdf_file_path)));
+                stream2.write(pdf_file.getBytes());
+                stream2.close();
+
+                byte[] pdf_data=pdf_file.getBytes();
+                String base64_Encoded_PDF = Base64.encodeBase64String(pdf_data);
+
+                book.setPdfName(pdf_file_name);
+                book.setPdfPath(pdf_file_path);
+                book.setPdf(base64_Encoded_PDF.getBytes(StandardCharsets.UTF_8));
+
                 boolean status = bookService.AddBook(book);
-                //displays success msg if status = true (saved the book)
-                    if(status)
-                    {
+
+
+                if(status)
+                {
                     return "redirect:/admin/viewallbooks?editsuccess";
-                    }
+                }
+
             }
+            else
+            {
+                //if user has selected both pdf and image in the edit form
+
+                //----image-----
+                String file_name=file.getOriginalFilename();
+                String file_path= Paths.get(Upload_Directory,file_name).toString();
+
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(file_path)));
+                stream.write(file.getBytes());
+                stream.close();
+
+                byte[] image_data=file.getBytes();
+                String base64_Encoded_Image = Base64.encodeBase64String(image_data);
+
+                //----pdf----
+                String pdf_file_name = pdf_file.getOriginalFilename();
+                String pdf_file_path = Paths.get(Upload_Directory,pdf_file_name).toString();
+
+                BufferedOutputStream stream2 = new BufferedOutputStream(new FileOutputStream(new File(pdf_file_path)));
+                stream2.write(pdf_file.getBytes());
+                stream2.close();
+
+                byte[] pdf_data=pdf_file.getBytes();
+                String base64_Encoded_PDF = Base64.encodeBase64String(pdf_data);
+
+
+                book.setBookname(book_name);
+                book.setAuthor(book_author);
+                book.setImage(base64_Encoded_Image.getBytes(StandardCharsets.UTF_8));
+                book.setFileName(file_name);
+                book.setFilePath(file_path);
+                book.setCategory(book_category);
+                book.setPdfName(pdf_file_name);
+                book.setPdfPath(pdf_file_path);
+                book.setPdf(base64_Encoded_PDF.getBytes(StandardCharsets.UTF_8));
+
+                boolean status = bookService.AddBook(book);
+
+
+                if(status)
+                {
+                    return "redirect:/admin/viewallbooks?editsuccess";
+                }
+
+            }
+//            end of else
+
+
 
         }
         catch (Exception e)

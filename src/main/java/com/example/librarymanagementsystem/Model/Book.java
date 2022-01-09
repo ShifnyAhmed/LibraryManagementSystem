@@ -27,12 +27,20 @@ public class Book {
     @Column(name = "file_Path")
     private String filePath;
 
+    private byte[] pdf;
+
+    @Column(name = "pdf_Name")
+    private String pdfName;
+
+    @Column(name = "pdf_Path")
+    private String pdfPath;
+
 
 
     //Constructors
 
 
-    public Book(Long id, String bookname, String author, String category, byte[] image, String fileName, String filePath) {
+    public Book(Long id, String bookname, String author, String category, byte[] image, String fileName, String filePath, byte[] pdf, String pdfName, String pdfPath) {
         this.id = id;
         this.bookname = bookname;
         this.author = author;
@@ -40,15 +48,21 @@ public class Book {
         this.image = image;
         this.fileName = fileName;
         this.filePath = filePath;
+        this.pdf = pdf;
+        this.pdfName = pdfName;
+        this.pdfPath = pdfPath;
     }
 
-    public Book(String bookname, String author, String category, byte[] image, String fileName, String filePath) {
+    public Book(String bookname, String author, String category, byte[] image, String fileName, String filePath, byte[] pdf, String pdfName, String pdfPath) {
         this.bookname = bookname;
         this.author = author;
         this.category = category;
         this.image = image;
         this.fileName = fileName;
         this.filePath = filePath;
+        this.pdf = pdf;
+        this.pdfName = pdfName;
+        this.pdfPath = pdfPath;
     }
 
     public Book() {
@@ -111,5 +125,29 @@ public class Book {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public byte[] getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(byte[] pdf) {
+        this.pdf = pdf;
+    }
+
+    public String getPdfName() {
+        return pdfName;
+    }
+
+    public void setPdfName(String pdfName) {
+        this.pdfName = pdfName;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 }

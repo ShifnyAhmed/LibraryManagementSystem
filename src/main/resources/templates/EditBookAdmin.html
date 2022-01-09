@@ -164,6 +164,21 @@
                         <!------------------------------------------------------->
                         <input type="text"
                                class="form-control"
+                               id="pdf_filename"
+                               name="pdf_filename"
+                               th:value="${pdf_filename}"
+                               style="width: 300px"
+                               hidden>
+                        <input type="text"
+                               class="form-control"
+                               id="pdf_filepath"
+                               name="pdf_filepath"
+                               th:value="${pdf_filepath}"
+                               style="width: 300px"
+                               hidden>
+
+                        <input type="text"
+                               class="form-control"
                                id="filename"
                                name="filename"
                                th:value="${filename}"
@@ -183,6 +198,13 @@
                                th:value="${image}"
                                style="width: 300px"
                                hidden>
+                        <input type="text"
+                               class="form-control"
+                               id="pdf"
+                               name="pdf"
+                               th:value="${image}"
+                               style="width: 300px"
+                               hidden>
                         <!----------------------------------------------------->
 
                         <label for="file">Select Thumbnail </label>
@@ -191,7 +213,15 @@
                                name="file"
                                id="file"
                                style="width: 300px"
-                               required>
+                               >
+
+                        <label for="pdf_file">Select PDF </label>
+                        <input type="file"
+                               class="form-control"
+                               name="pdf_file"
+                               id="pdf_file"
+                               style="width: 300px"
+                               >
                     </div>
                     <br>
                     <div style="padding-left: 100px;">

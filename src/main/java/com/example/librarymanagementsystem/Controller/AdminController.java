@@ -132,7 +132,7 @@ public class AdminController {
                                  @RequestParam("email") String email
                                  ,Model model)
     {
-        String message="You have been blacklisted by the admin,From now on you will be unable to borrow books online, contact admin to resolve the problem.";
+        String message="You have been blacklisted by the admin,From now on you will be unable to reserve books online, contact admin to resolve the problem.";
             try {
 
                 userService.update(blacklist,id);
@@ -197,7 +197,7 @@ public class AdminController {
                                 @RequestParam("email") String email
             ,Model model)
     {
-        String message="You have been promoted/demoted ! Check your level in profile.";
+        String message="You have been promoted/demoted ! Check your member level in profile.";
         try {
 
             userService.promoteMember(level,id);
@@ -290,7 +290,7 @@ public class AdminController {
                                       @RequestParam("email") String email
             ,Model model)
     {
-        String message="Congrats! You have been removed from blacklist, start borrowing books online and have fun!";
+        String message="Congrats! You have been removed from blacklist, start reserving books online and have fun!";
         try {
 
             userService.update(blacklist,id);

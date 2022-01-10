@@ -347,6 +347,7 @@ public class MemberController {
                     {
                         reservation.setLending_charges(50);
                         reservation.setLending_duration(3);
+                        reservation.setOverdue_charges(20);
 
                         String allowed_return_date = reserved_date;  // Start date
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -361,12 +362,14 @@ public class MemberController {
                         model.addAttribute("lending_duration","3");
                         model.addAttribute("overdue_charges","20");
                         model.addAttribute("allowed_return_date",allowed_return_date);
+                        model.addAttribute("overdue_charges","20");
 
                     }
                     else if(Objects.equals(level, "Silver"))
                     {
                         reservation.setLending_charges(40);
                         reservation.setLending_duration(4);
+                        reservation.setOverdue_charges(15);
 
                         String allowed_return_date = reserved_date;  // Start date
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -381,11 +384,13 @@ public class MemberController {
                         model.addAttribute("lending_duration","4");
                         model.addAttribute("overdue_charges","15");
                         model.addAttribute("allowed_return_date",allowed_return_date);
+                        model.addAttribute("overdue_charges","15");
                     }
                     else if(Objects.equals(level, "Gold"))
                     {
                         reservation.setLending_charges(30);
                         reservation.setLending_duration(4);
+                        reservation.setOverdue_charges(10);
 
                         String allowed_return_date = reserved_date;  // Start date
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -400,11 +405,13 @@ public class MemberController {
                         model.addAttribute("lending_duration","4");
                         model.addAttribute("overdue_charges","10");
                         model.addAttribute("allowed_return_date",allowed_return_date);
+                        model.addAttribute("overdue_charges","10");
                     }
                     else if(Objects.equals(level, "Platinum"))
                     {
                         reservation.setLending_charges(20);
                         reservation.setLending_duration(5);
+                        reservation.setOverdue_charges(5);
 
                         String allowed_return_date = reserved_date;  // Start date
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -419,6 +426,7 @@ public class MemberController {
                         model.addAttribute("lending_duration","4");
                         model.addAttribute("overdue_charges","5");
                         model.addAttribute("allowed_return_date",allowed_return_date);
+                        model.addAttribute("overdue_charges","5");
                     }
 
                 reservation.setEmail(reverving_user_email);

@@ -13,4 +13,6 @@ public interface ReservationService {
         String saveReservation(Reservation reservation);
 
         void deleteReservation(Reservation reservation);
+
+        List<Reservation> getReservationByEmailAndStatus(String email, String status);
 }

@@ -43,4 +43,9 @@ public class ReservationServiceImpl implements ReservationService {
     public void deleteReservation(Reservation reservation) {
                 reservationRepository.delete(reservation);
     }
+
+    @Override
+    public List<Reservation> getReservationByEmailAndStatus(String email, String status) {
+        return reservationRepository.findByEmailAndStatus(email,status);
+    }
 }

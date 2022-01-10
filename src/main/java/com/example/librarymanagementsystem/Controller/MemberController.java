@@ -314,7 +314,7 @@ public class MemberController {
     }
 
 
-    //    -------------------------------------------------------------------------------------------------
+//    -------------------------------------------------------------------------------------------------
 
     //this will save the reservation as pending to reservation table in database
     @PostMapping(value = "/user/reservebook")
@@ -448,6 +448,22 @@ public class MemberController {
         return "ReservationReceiptMember";
     }
 
+//    -------------------------------------------------------------------------------------------------
 
+    //Displays all the On The Way orders of the logged in pharmacist
+    @RequestMapping(value = "/user/viewpendingreservations/{email}/{status}")
+    public String viewMyPendingReservationlist(@PathVariable ("email")String email, @PathVariable("status") String status, Model model)
+    {
+        List<Reservation> my_pending_reservations = reservationService.getReservationByEmailAndStatus(email, status);
+
+        model.addAttribute("my_pending_reservations",my_pending_reservations);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to PendingReservationsMember html page
+        return "PendingReservationsMember";
+    }
 
 }

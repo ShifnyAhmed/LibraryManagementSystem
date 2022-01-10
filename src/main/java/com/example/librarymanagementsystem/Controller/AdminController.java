@@ -1,16 +1,10 @@
 package com.example.librarymanagementsystem.Controller;
 
-import com.example.librarymanagementsystem.Model.Book;
-import com.example.librarymanagementsystem.Model.Contact;
-import com.example.librarymanagementsystem.Model.Notification;
-import com.example.librarymanagementsystem.Model.User;
+import com.example.librarymanagementsystem.Model.*;
 import com.example.librarymanagementsystem.Repository.BookRepository;
 import com.example.librarymanagementsystem.Repository.ContactRepository;
 import com.example.librarymanagementsystem.Repository.UserRepository;
-import com.example.librarymanagementsystem.Service.BookService;
-import com.example.librarymanagementsystem.Service.ContactService;
-import com.example.librarymanagementsystem.Service.NotificationService;
-import com.example.librarymanagementsystem.Service.UserService;
+import com.example.librarymanagementsystem.Service.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -59,6 +53,9 @@ public class AdminController {
 
     @Autowired
     ContactRepository contactRepository;
+
+    @Autowired
+    ReservationService reservationService;
 
     //displays all the members of showcase bookstore who are not blacklisted
     @RequestMapping(value = "/admin/viewallmembers")
@@ -699,6 +696,24 @@ public class AdminController {
 
 
         return  "redirect:/admin/allmessages?deletemsgsuccess";
+    }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    //Displays all the pending reservations of the logged in member
+    @RequestMapping(value = "/admin/viewpendingreservations/{status}")
+    public String PendingReservationlist(@PathVariable("status") String status, Model model)
+    {
+        List<Reservation> pending_reservations = reservationService.getReservationByStatus(status);
+
+        model.addAttribute("pending_reservations",pending_reservations);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to PendingReservationsMember html page
+        return "PendingReservationsAdmin";
     }
 
 }

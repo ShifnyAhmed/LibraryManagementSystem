@@ -70,7 +70,85 @@
 
 
             <!--        Content in middle-->
-            <h1>Reserve Books</h1>
+
+            <form th:action="@{/user/reservebook}" action="/user/reservebook" method="post">
+
+
+                <div class="container m-3">
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-7">
+                            <div class="card p-3 py-3 ">
+
+
+
+
+                                <div align="center">
+                                    <h3>Reserve Book</h3>
+                                    <br>
+
+                                    <input class="btn-outline-success"
+                                           type="text"
+                                           id="book_id"
+                                           th:value="${book_id}"
+                                           name="book_id"
+                                           hidden>
+
+                                    <label for="book_name"><h5>Book : </h5></label>
+                                    <input class="btn-outline-success"
+                                           type="text"
+                                           id="book_name"
+                                           th:value="${book_name}"
+                                           name="book_name"
+                                           readonly>
+                                    <br><br><br>
+
+                                    <div align="center">
+                                        <label class="control-label" for="reserved_date"><b> Select a Date To Reserve The Book For You To Collect</b> </label>
+                                        <br><br>
+                                        <input type="date"
+                                               class="form-control"
+                                               id="reserved_date"
+                                               name="reserved_date"
+                                               max="2022-12-31"
+                                               min="2022-03-01"
+                                               style="width: 300px"
+                                               required/>
+                                    </div>
+
+
+                                    <br>
+                                    <br>
+
+
+                                    <div class="form-group">
+                                        <h5>Reserved To :</h5>
+                                        <h6 sec:authentication="principal.username"  th:name="email" id="email"><i>Email</i></h6>
+                                        <input class="btn-outline-success" type="text"  th:action="@{/user/username}" th:name="email" hidden>
+                                    </div>
+
+
+
+                                </div><!--    End of align center-->
+                            </div><!--End of class="card p-3 py-4"-->
+                        </div><!--End of class="col-md-7"-->
+                    </div><!--    End of row d flex-->
+
+
+
+
+                    <div align="center">
+
+                        <button type="submit" class="btn btn-success">Reserve Book</button>
+
+                    </div><!--End of align center-->
+
+                </div><!--End of container-->
+
+
+            </form>
+
+
 
             <!--    End of Content in middle-->
 

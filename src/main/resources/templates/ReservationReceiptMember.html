@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Reservation Receipt</title>
+</head>
+<body>
+
+<div sec:authorize="hasAnyAuthority('ROLE_MEMBER')">
+
+<!--Content in middle-->
+
+
+<br><br>
+<body style="margin: 0 !important; padding: 0 !important; background-color: #eeeeee;" bgcolor="#eeeeee">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                <tr>
+                    <td align="center" valign="top" style="font-size:0; padding: 35px;" bgcolor="green">
+                        <div style="display:inline-block; max-width:50%; min-width:100px; vertical-align:top; width:100%;">
+                            <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
+                                <tr>
+                                    <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 36px; font-weight: 800; line-height: 48px;" class="mobile-center">
+                                        <h1 style="font-size: 29px; font-weight: 540; margin: 0; color: #ffffff; text-align: center;">Reservation Receipt</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display:inline-block; max-width:50%; min-width:100px; vertical-align:top; width:100%;" class="mobile-hide">
+                            <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
+                                <tr>
+                                    <td align="right" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; line-height: 48px;">
+                                        <table cellspacing="0" cellpadding="0" border="0" align="right">
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" style="padding: 35px 35px 20px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:800px;">
+                            <tr>
+                                <td align="left" style="padding-top: 5px;">
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;"> Reservation Details</td>
+                                            <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Book Name</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${book_name}"> Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Reserved To</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${member_email}"> Email </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Reserved Date</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${reserved_date}" > Reserved Date </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Should Be Returned on or Before</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${allowed_return_date}" > Return Date </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Maximum Book Keeping Duration</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${lending_duration+' weeks'}">Duration</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Lending Charge</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${'Rs.'+lending_charges+'.00'}">Charges</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">Reservation Status</td>
+                                            <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;" th:text="${status}">Status</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="center" style="padding-top: 10px;">
+
+                                    <a th:href="@{/user/viewallbooks}" class="btn btn-success" >Back To Home</a>
+
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </td>
+
+    </tr>
+
+
+
+</table>
+</body>
+
+<!--end of content in middle-->
+
+
+
+</div><!--End Of Member Authorization-->
+
+
+<!--If logged in user is not member-->
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+
+    <!--Nav Bar (header)-->
+    <nav class="navbar navbar-expand-sm bg-success navbar-dark" style="background-color: #A8E4A0;">
+        <a class="navbar-brand" href="#" > <b>SHOWCASE - No Permission To View This Page</b> </a>
+    </nav>
+    <!--header end-->
+
+    <div align="center">
+
+        <img src="https://techlazza.com/wp-content/uploads/2021/03/for-to-fix-403-main.jpg" width="1200px" class="align-content-xxl-stretch" alt="403">
+
+    </div> <!--End of div align="center"  -->
+
+</div>
+<!--End Of -If logged in user is not member-->
+
+
+</body>
+</html>

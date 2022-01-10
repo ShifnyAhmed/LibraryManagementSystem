@@ -9,4 +9,8 @@ public interface ReservationService {
         List<Reservation> getReservationByStatus(String status);
 
         void getNumberOfReservationByEmail(String email);
+
+        String saveReservation(Reservation reservation);
+
+        void deleteReservation(Reservation reservation);
 }

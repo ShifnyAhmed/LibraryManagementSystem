@@ -1,15 +1,9 @@
 package com.example.librarymanagementsystem.Controller;
 
-import com.example.librarymanagementsystem.Model.Book;
-import com.example.librarymanagementsystem.Model.Contact;
-import com.example.librarymanagementsystem.Model.Notification;
-import com.example.librarymanagementsystem.Model.User;
+import com.example.librarymanagementsystem.Model.*;
 import com.example.librarymanagementsystem.Repository.BookRepository;
 import com.example.librarymanagementsystem.Repository.UserRepository;
-import com.example.librarymanagementsystem.Service.BookService;
-import com.example.librarymanagementsystem.Service.ContactService;
-import com.example.librarymanagementsystem.Service.NotificationService;
-import com.example.librarymanagementsystem.Service.UserService;
+import com.example.librarymanagementsystem.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +41,9 @@ public class MemberController {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    ReservationService reservationService;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -290,7 +289,8 @@ public class MemberController {
     {
         Optional<Book> reserve_book = bookRepository.findById(id);
 
-        model.addAttribute("reserve_book",reserve_book);
+        model.addAttribute("book_id",reserve_book.get().getId());
+        model.addAttribute("book_name",reserve_book.get().getBookname());
 
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails=(UserDetails)authentication.getPrincipal();
@@ -311,6 +311,141 @@ public class MemberController {
        }
 
 
+    }
+
+
+    //    -------------------------------------------------------------------------------------------------
+
+    //this will save the reservation as pending to reservation table in database
+    @PostMapping(value = "/user/reservebook")
+    public String reserveBook(@Valid Reservation reservation,
+                             @RequestParam("book_id") Long book_id,
+                             @RequestParam("book_name") String book_name,
+                              @RequestParam("reserved_date") String reserved_date ,Model model) {
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+            try {
+            User reserveing_user = userService.getUserByEmail(userDetails.getUsername());
+
+            String reverving_user_email = userDetails.getUsername();
+            String blacklist = reserveing_user.getBlacklist();
+            String current_status = "Pending";
+            String level = reserveing_user.getLevel();
+
+            //blacklisted members are restricted to reserve books
+            if (Objects.equals(blacklist, "Yes"))
+            {
+                return "redirect:/user/viewallbooks?blacklisted";
+            }
+            else{
+
+                //member level checking
+                    if(Objects.equals(level, "Bronze"))
+                    {
+                        reservation.setLending_charges(50);
+                        reservation.setLending_duration(3);
+
+                        String allowed_return_date = reserved_date;  // Start date
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(sdf.parse(allowed_return_date));
+                        c.add(Calendar.DATE, 21);  // number of days to add
+                        allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
+
+                        reservation.setAllowed_return_date(allowed_return_date);
+
+                        model.addAttribute("lending_charges","50");
+                        model.addAttribute("lending_duration","3");
+                        model.addAttribute("overdue_charges","20");
+                        model.addAttribute("allowed_return_date",allowed_return_date);
+
+                    }
+                    else if(Objects.equals(level, "Silver"))
+                    {
+                        reservation.setLending_charges(40);
+                        reservation.setLending_duration(4);
+
+                        String allowed_return_date = reserved_date;  // Start date
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(sdf.parse(allowed_return_date));
+                        c.add(Calendar.DATE, 28);  // number of days to add
+                        allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
+
+                        reservation.setAllowed_return_date(allowed_return_date);
+
+                        model.addAttribute("lending_charges","40");
+                        model.addAttribute("lending_duration","4");
+                        model.addAttribute("overdue_charges","15");
+                        model.addAttribute("allowed_return_date",allowed_return_date);
+                    }
+                    else if(Objects.equals(level, "Gold"))
+                    {
+                        reservation.setLending_charges(30);
+                        reservation.setLending_duration(4);
+
+                        String allowed_return_date = reserved_date;  // Start date
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(sdf.parse(allowed_return_date));
+                        c.add(Calendar.DATE, 28);  // number of days to add
+                        allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
+
+                        reservation.setAllowed_return_date(allowed_return_date);
+
+                        model.addAttribute("lending_charges","30");
+                        model.addAttribute("lending_duration","4");
+                        model.addAttribute("overdue_charges","10");
+                        model.addAttribute("allowed_return_date",allowed_return_date);
+                    }
+                    else if(Objects.equals(level, "Platinum"))
+                    {
+                        reservation.setLending_charges(20);
+                        reservation.setLending_duration(5);
+
+                        String allowed_return_date = reserved_date;  // Start date
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(sdf.parse(allowed_return_date));
+                        c.add(Calendar.DATE, 35);  // number of days to add
+                        allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
+
+                        reservation.setAllowed_return_date(allowed_return_date);
+
+                        model.addAttribute("lending_charges","20");
+                        model.addAttribute("lending_duration","4");
+                        model.addAttribute("overdue_charges","5");
+                        model.addAttribute("allowed_return_date",allowed_return_date);
+                    }
+
+                reservation.setEmail(reverving_user_email);
+                reservation.setStatus(current_status);
+                reservation.setBook_id(book_id);
+                reservation.setBook_name(book_name);
+                reservation.setReserved_date(reserved_date);
+
+                        reservationService.saveReservation(reservation);
+
+
+            }//end of (blacklist check) else
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("book_name",book_name);
+        model.addAttribute("status","Pending");
+        model.addAttribute("reserved_date",reserved_date);
+        model.addAttribute("member_email",userDetails.getUsername());
+
+
+        return "ReservationReceiptMember";
     }
 
 

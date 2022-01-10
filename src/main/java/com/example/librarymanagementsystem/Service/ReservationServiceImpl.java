@@ -25,4 +25,22 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservationRepository.countReservationByEmail(email);
     }
+
+    @Override
+    public String saveReservation(Reservation reservation) {
+        if(reservation != null)
+        {
+            reservationRepository.save(reservation);
+        }
+        else
+        {
+            return "Error";
+        }
+        return "Error";
+    }
+
+    @Override
+    public void deleteReservation(Reservation reservation) {
+                reservationRepository.delete(reservation);
+    }
 }

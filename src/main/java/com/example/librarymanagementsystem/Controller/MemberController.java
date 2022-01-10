@@ -307,7 +307,6 @@ public class MemberController {
        }
        else
        {
-
            return "ReserveBookMember";
        }
 

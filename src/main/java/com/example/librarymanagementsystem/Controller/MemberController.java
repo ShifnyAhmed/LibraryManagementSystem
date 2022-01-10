@@ -458,7 +458,7 @@ public class MemberController {
 
 //    -------------------------------------------------------------------------------------------------
 
-    //Displays all the On The Way orders of the logged in pharmacist
+    //Displays all the pending reservations of the logged in member
     @RequestMapping(value = "/user/viewpendingreservations/{email}/{status}")
     public String viewMyPendingReservationlist(@PathVariable ("email")String email, @PathVariable("status") String status, Model model)
     {
@@ -472,6 +472,24 @@ public class MemberController {
 
         //redirecting to PendingReservationsMember html page
         return "PendingReservationsMember";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //Displays all the approved reservations of the logged in member
+    @RequestMapping(value = "/user/viewapprovedreservations/{email}/{status}")
+    public String viewMyApprovedReservationlist(@PathVariable ("email")String email, @PathVariable("status") String status, Model model)
+    {
+        List<Reservation> my_approved_reservations = reservationService.getReservationByEmailAndStatus(email, status);
+
+        model.addAttribute("my_approved_reservations",my_approved_reservations);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        //redirecting to PendingReservationsMember html page
+        return "ApprovedReservationsMember";
     }
 
 }

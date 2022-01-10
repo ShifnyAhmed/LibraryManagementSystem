@@ -32,10 +32,13 @@
                     <a class="nav-link" th:href="@{/user/viewallbooks}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Pending Reservation</a>
+                    <a class="nav-link" href="#">Pending Reservation</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Reservation History</a>
+                    <a class="nav-link" href="#">Approved Reservation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Reservation History</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">View Favourite</a>
@@ -76,7 +79,7 @@
 
             <!--        Content in middle-->
             <h1>Notification</h1>
-            <div align="center" style="padding-left: 1230px">
+            <div align="center" style="padding-left: 1030px">
                 <a th:href="@{/user/clearallnotification/{email}(email=${useremail.getUsername()})}" class="btn btn-success" style="width: 90px" >Clear All</a>
             </div>
 

@@ -62,13 +62,26 @@
     </nav>
     <!--End of header-->
 
+    <div align="center">
+        <div th:if="${param.approvedsuccess}">
+            <div class="alert alert-success">Reservation Approved !</div>
+        </div>
+        <div th:if="${param.approvedunsuccess}">
+            <div class="alert alert-danger">Something Went Wrong, Could Not Approve Reservation !</div>
+        </div>
 
+        <div th:if="${param.rejectedsuccess}">
+            <div class="alert alert-success">Reservation Rejected and Deleted !</div>
+        </div>
+        <div th:if="${param.rejectedunsuccess}">
+            <div class="alert alert-danger">Something Went Wrong, Could Not Reject and Delete Reservation !</div>
+        </div>
+    </div>
 
     <br>
     <div align="center">
-        <h5>Lending Requests of Members</h5>
-        <h7><i><b>Note:</b> Rejected requests will be deleted from reservation table</i></h7>
-        <br><br>
+        <h3>Lending Requests of Members</h3>
+        <br>
 
         <!-- Content in middle-->
         <div align="center">
@@ -78,7 +91,7 @@
 
                     <th scope="col">Book</th>
                     <th scope="col">Reserved Date</th>
-                    <th scope="col">Return on or Before</th>
+                    <th scope="col">Reserved By</th>
                     <th scope="col">Lending Charge</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
@@ -89,14 +102,14 @@
                 <tr th:each="Reservation : ${pending_reservations}">
                     <td  th:text="${Reservation.getBook_name()}" ></td>
                     <td th:text="${Reservation.getReserved_date()}"></td>
-                    <td th:text="${Reservation.getAllowed_return_date()}"></td>
+                    <td th:text="${Reservation.getEmail()}"></td>
                     <td th:text="${'Rs.'+Reservation.getLending_charges()+'.00'}"></td>
                     <td th:text="${Reservation.getStatus()}"></td>
                     <td>
-                        <a href="#" class="btn btn-success" style="width: 150px" >Approve Request</a>
+                        <a th:href="@{/admin/approvereservationpage/{id}(id=${Reservation.getId()})}" class="btn btn-success" style="width: 150px" >Approve Request</a>
                     </td>
                     <td>
-                        <a href="#" class="btn btn-success" style="width: 140px" >Reject Request</a>
+                        <a th:href="@{/admin/rejectreservationpage/{id}(id=${Reservation.getId()})}" class="btn btn-success" style="width: 140px" >Reject Request</a>
                     </td>
                 </tr>
                 </tbody>

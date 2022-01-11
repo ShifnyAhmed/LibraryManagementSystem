@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -42,6 +43,16 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void deleteReservation(Reservation reservation) {
                 reservationRepository.delete(reservation);
+    }
+
+    @Override
+    public void deleteReservationById(Long id) {
+        reservationRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Reservation> getReservationByID(Long id) {
+        return reservationRepository.findById(id);
     }
 
     @Override

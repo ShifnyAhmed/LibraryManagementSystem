@@ -698,7 +698,7 @@ public class AdminController {
         return  "redirect:/admin/allmessages?deletemsgsuccess";
     }
 
-    //    -------------------------------------------------------------------------------------------------
+//    -------------------------------------------------------------------------------------------------
 
     //Displays all the pending reservations of the logged in member
     @RequestMapping(value = "/admin/viewpendingreservations/{status}")
@@ -714,6 +714,140 @@ public class AdminController {
 
         //redirecting to PendingReservationsMember html page
         return "PendingReservationsAdmin";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    @GetMapping(value = "/admin/approvereservationpage/{id}")
+    public String ApproveReservationPage(@PathVariable("id") Long id,Model model)
+    {
+        Optional<Reservation> reservation_details = reservationService.getReservationByID(id);
+
+        model.addAttribute("reservation_id",reservation_details.get().getId());
+        model.addAttribute("book_id",reservation_details.get().getBook_id());
+        model.addAttribute("member_email",reservation_details.get().getEmail());
+        model.addAttribute("bookname",reservation_details.get().getBook_name());
+        model.addAttribute("reserved_date",reservation_details.get().getReserved_date());
+        model.addAttribute("lending_duration",reservation_details.get().getLending_duration());
+        model.addAttribute("lending_charges",reservation_details.get().getLending_charges());
+        model.addAttribute("allowed_return_date",reservation_details.get().getAllowed_return_date());
+        model.addAttribute("overdue_charges",reservation_details.get().getOverdue_charges());
+
+
+        return "ApproveReservationAdmin";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //Updates status of reservation as "Approved"
+    @PostMapping(value = "/admin/approvereservation")
+    public String UpdateOrder(@Valid Reservation reservation, @Valid Notification notification,
+                              @RequestParam("reservation_id")Long reservation_id,
+                              @RequestParam("book_id")Long book_id,
+                              @RequestParam("member_email")String member_email,
+                              @RequestParam("book_name") String book_name,
+                              @RequestParam("lending_duration") String lending_duration,
+                              @RequestParam("lending_charges")String lending_charges,
+                              @RequestParam("overdue_charges")String overdue_charges,
+                              @RequestParam("reserved_date")String reserved_date,
+                              @RequestParam("allowed_return_date")String allowed_return_date
+                              , Model model) {
+        try {
+            reservation.setId(reservation_id);
+            reservation.setBook_id(book_id);
+            reservation.setBook_name(book_name);
+            reservation.setEmail(member_email);
+            reservation.setLending_duration(Integer.parseInt(lending_duration));
+            reservation.setLending_charges(Integer.parseInt(lending_charges));
+            reservation.setOverdue_charges(Integer.parseInt(overdue_charges));
+            reservation.setReserved_date(reserved_date);
+            reservation.setAllowed_return_date(allowed_return_date);
+            reservation.setStatus("Approved");
+
+            reservationService.saveReservation(reservation);
+
+            String message = "Your Reservation on Book: "+book_name+" has been approved, collect your book at Showcase Bookstore on " +reserved_date+"";
+
+            //notifying user on approval
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(member_email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+            return  "redirect:/admin/viewpendingreservations/Pending?approvedsuccess";
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return  "redirect:/admin/viewpendingreservations/Pending?approvedunsuccess";
+        }
+
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+
+    @GetMapping(value = "/admin/rejectreservationpage/{id}")
+    public String RejectReservationPage(@PathVariable("id") Long id,Model model)
+    {
+        Optional<Reservation> reject_reservation_details = reservationService.getReservationByID(id);
+
+        model.addAttribute("reservation_id",reject_reservation_details.get().getId());
+        model.addAttribute("book_id",reject_reservation_details.get().getBook_id());
+        model.addAttribute("member_email",reject_reservation_details.get().getEmail());
+        model.addAttribute("bookname",reject_reservation_details.get().getBook_name());
+        model.addAttribute("reserved_date",reject_reservation_details.get().getReserved_date());
+        model.addAttribute("lending_duration",reject_reservation_details.get().getLending_duration());
+        model.addAttribute("lending_charges",reject_reservation_details.get().getLending_charges());
+        model.addAttribute("allowed_return_date",reject_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("overdue_charges",reject_reservation_details.get().getOverdue_charges());
+
+        return "RejectReservationAdmin";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //Updates status of reservation as "Approved"
+    @PostMapping(value = "/admin/rejectreservation")
+    public String UpdateOrder(@Valid Reservation reservation, @Valid Notification notification,
+                              @RequestParam("reservation_id")Long reservation_id,
+                              @RequestParam("member_email")String member_email,
+                              @RequestParam("book_name") String book_name,
+                              @RequestParam("reserved_date")String reserved_date
+                                , Model model) {
+
+
+        try{
+
+            reservationService.deleteReservationById(reservation_id);
+
+            String message = "Your Reservation on Book: "+book_name+" for Date: "+reserved_date+" has been rejected by the admin";
+
+            //notifying user on approval
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(member_email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+            return  "redirect:/admin/viewpendingreservations/Pending?rejectedsuccess";
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return  "redirect:/admin/viewpendingreservations/Pending?rejectedunsuccess";
+
+        }
+
     }
 
 }

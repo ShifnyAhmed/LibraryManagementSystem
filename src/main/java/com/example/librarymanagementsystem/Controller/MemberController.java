@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class MemberController {
@@ -44,6 +44,9 @@ public class MemberController {
 
     @Autowired
     ReservationService reservationService;
+
+    @Autowired
+    ReturnedService returnedService;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -526,5 +529,171 @@ public class MemberController {
         //redirecting to PendingReservationsMember html page
         return "ApprovedReservationsMember";
     }
+
+//    -------------------------------------------------------------------------------------------------
+
+    @GetMapping(value = "/user/returnbookpage/{id}")
+    public String ReturnBookButton(@PathVariable("id") Long id, Model model)
+    {
+        Optional<Reservation> return_book_details = reservationService.getReservationByID(id);
+
+        model.addAttribute("reservation_id",return_book_details.get().getId());
+        model.addAttribute("book_id",return_book_details.get().getBook_id());
+        model.addAttribute("member_email",return_book_details.get().getEmail());
+        model.addAttribute("bookname",return_book_details.get().getBook_name());
+        model.addAttribute("reserved_date",return_book_details.get().getReserved_date());
+        model.addAttribute("lending_duration",return_book_details.get().getLending_duration());
+        model.addAttribute("lending_charges",return_book_details.get().getLending_charges());
+        model.addAttribute("allowed_return_date",return_book_details.get().getAllowed_return_date());
+        model.addAttribute("overdue_charges",return_book_details.get().getOverdue_charges());
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+
+        return "ReturnBookMember";
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    //This deletes the selected row from reservation page and adds row with same and few additional details in returned table
+    @PostMapping(value = "/user/returnbook")
+    public String ReturnBook(@Valid Notification notification,
+                              @Valid Returned returned,
+                              @RequestParam("reservation_id")Long reservation_id,
+                              @RequestParam("book_id")Long book_id,
+                              @RequestParam("member_email")String member_email,
+                              @RequestParam("book_name") String book_name,
+                              @RequestParam("lending_duration") String lending_duration,
+                              @RequestParam("lending_charges")String lending_charges,
+                              @RequestParam("overdue_charges")String overdue_charges,
+                              @RequestParam("reserved_date")String reserved_date,
+                              @RequestParam("allowed_return_date")String allowed_return_date
+            , Model model) {
+
+        try {
+            DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            Date reserved_date_date = sdf.parse(reserved_date);
+            Date should_return_date = sdf.parse(allowed_return_date);
+            Date returned_date = sdf.parse(dateTimeFormatter.format(localDateTime));
+            model.addAttribute("returned_on",dateTimeFormatter.format(localDateTime));
+
+            //if book was marked returned after the reserved date
+            if(returned_date.after(reserved_date_date))
+            {
+
+                //if the book is marked returned after the allowed returned date
+                if(returned_date.after(should_return_date))
+                {
+                    long diffInMillies = Math.abs(returned_date.getTime() - should_return_date.getTime());
+                    long diff_In_Days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+                    int total_overdue = (int) ((Integer.parseInt(overdue_charges))*diff_In_Days);
+
+                    int lending_charges_int = Integer.parseInt(lending_charges);
+                    int total_payable = total_overdue+lending_charges_int;
+
+
+                    returned.setTotal(total_payable);
+                    returned.setBook_id(book_id);
+                    returned.setBook_name(book_name);
+                    returned.setEmail(member_email);
+                    returned.setLending_duration(Integer.parseInt(lending_duration));
+                    returned.setLending_charges(Integer.parseInt(lending_charges));
+                    returned.setOverdue_charges(Integer.parseInt(overdue_charges));
+                    returned.setReserved_date(reserved_date);
+                    returned.setAllowed_return_date(allowed_return_date);
+                    returned.setStatus("Checking Returned");
+                    returned.setActual_return_date(dateTimeFormatter.format(localDateTime));
+
+                    returnedService.saveReturnedReservation(returned);
+                    reservationService.deleteReservationById(reservation_id);
+
+                    notification.setDate(dateTimeFormatter2.format(localDateTime));
+                    notification.setEmail(member_email);
+                    notification.setMessage("The Book you marked as returned is now being checked by the admin, you will be notified once the admin has confirmed the book as returned");
+                    notificationService.AddNotification(notification);
+
+                    model.addAttribute("total",total_payable);
+                    model.addAttribute("total_overdue",total_overdue);
+                    model.addAttribute("overdue_days",diff_In_Days);
+
+                }
+                else
+                {
+                    //if the book is marked returned between the allowed returned date and reserved date
+
+                    int total_payable = Integer.parseInt(lending_charges);
+                    int total_overdue = 0;
+
+                    returned.setTotal(total_payable);
+                    returned.setBook_id(book_id);
+                    returned.setBook_name(book_name);
+                    returned.setEmail(member_email);
+                    returned.setLending_duration(Integer.parseInt(lending_duration));
+                    returned.setLending_charges(Integer.parseInt(lending_charges));
+                    returned.setOverdue_charges(Integer.parseInt(overdue_charges));
+                    returned.setReserved_date(reserved_date);
+                    returned.setAllowed_return_date(allowed_return_date);
+                    returned.setStatus("Checking Returned");
+                    returned.setActual_return_date(dateTimeFormatter.format(localDateTime));
+
+                    returnedService.saveReturnedReservation(returned);
+                    reservationService.deleteReservationById(reservation_id);
+
+                    notification.setDate(dateTimeFormatter2.format(localDateTime));
+                    notification.setEmail(member_email);
+                    notification.setMessage("The Book you marked as returned is now being checked by the admin, you will be notified once the admin has confirmed the book as returned");
+                    notificationService.AddNotification(notification);
+
+                    model.addAttribute("total",total_payable);
+                    model.addAttribute("total_overdue",total_overdue);
+                    model.addAttribute("overdue_days",0);
+
+                }
+                model.addAttribute("reservation_id",reservation_id);
+                model.addAttribute("book_id",book_id);
+                model.addAttribute("member_email",member_email);
+                model.addAttribute("bookname",book_name);
+                model.addAttribute("reserved_date",reserved_date);
+                model.addAttribute("lending_duration",lending_duration);
+                model.addAttribute("lending_charges",lending_charges);
+                model.addAttribute("allowed_return_date",allowed_return_date);
+                model.addAttribute("overdue_charges",overdue_charges);
+                return "ReturnedReceiptMember";
+
+            }
+            else if(returned_date.equals(reserved_date_date)){
+
+                //if book was marked returned on the same day the book was reserved
+
+                return "redirect:/user/viewapprovedreservations/"+member_email+"/Approved?samedateerror";
+            }
+            else
+            {
+                //if book was marked returned before the reserved date
+                return "redirect:/user/viewapprovedreservations/"+member_email+"/Approved?beforedateerror";
+            }
+
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "redirect:/user/viewapprovedreservations/"+member_email+"/Approved?error";
+        }
+
+
+    }
+
+
+
+
 
 }

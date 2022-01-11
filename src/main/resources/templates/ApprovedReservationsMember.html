@@ -65,12 +65,26 @@
     </nav>
     <!--End of header-->
 
+    <div align="center">
+        <div th:if="${param.samedateerror}">
+            <div class="alert alert-danger">Book can't be returned the same day it was reserved !</div>
+        </div>
+
+        <div th:if="${param.beforedateerror}">
+            <div class="alert alert-danger">Book can't be marked returned before the book is collected !</div>
+        </div>
+        <div th:if="${param.error}">
+            <div class="alert alert-danger">Something went wrong !</div>
+        </div>
+
+    </div>
+
     <div class="container mt-5">
         <div class="row">
 
 
             <!--        Content in middle-->
-            <h1>My Approved Reservation</h1>
+            <h1>My Approved Reservations</h1>
 
 
             <table class="table">
@@ -93,7 +107,7 @@
                     <td th:text="${'Rs.'+Reservation.getLending_charges()+'.00'}"></td>
                     <td th:text="${Reservation.getStatus()}"></td>
                     <td>
-                        <a href="#" class="btn btn-success" style="width: 120px" >Return Book</a>
+                        <a th:href="@{/user/returnbookpage/{id}(id=${Reservation.getId()})}" class="btn btn-success" style="width: 120px" >Return Book</a>
                     </td>
                 </tr>
                 </tbody>

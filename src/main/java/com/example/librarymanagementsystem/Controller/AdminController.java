@@ -741,7 +741,7 @@ public class AdminController {
 
     //Updates status of reservation as "Approved"
     @PostMapping(value = "/admin/approvereservation")
-    public String UpdateOrder(@Valid Reservation reservation, @Valid Notification notification,
+    public String ApproveReservation(@Valid Reservation reservation, @Valid Notification notification,
                               @RequestParam("reservation_id")Long reservation_id,
                               @RequestParam("book_id")Long book_id,
                               @RequestParam("member_email")String member_email,

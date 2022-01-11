@@ -21,9 +21,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void getNumberOfReservationByEmail(String email) {
+    public long getNumberOfReservationByEmail(String email) {
 
-        reservationRepository.countReservationByEmail(email);
+        return reservationRepository.countReservationByEmail(email);
     }
 
     @Override

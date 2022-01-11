@@ -335,6 +335,11 @@ public class MemberController {
             String current_status = "Pending";
             String level = reserveing_user.getLevel();
 
+            //this is used to get the allowed return date for each member level
+                String allowed_return_date = reserved_date;  // Start date
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c = Calendar.getInstance();
+
             //blacklisted members are restricted to reserve books
             if (Objects.equals(blacklist, "Yes"))
             {
@@ -349,9 +354,7 @@ public class MemberController {
                         reservation.setLending_duration(3);
                         reservation.setOverdue_charges(20);
 
-                        String allowed_return_date = reserved_date;  // Start date
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        Calendar c = Calendar.getInstance();
+
                         c.setTime(sdf.parse(allowed_return_date));
                         c.add(Calendar.DATE, 21);  // number of days to add
                         allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
@@ -371,9 +374,7 @@ public class MemberController {
                         reservation.setLending_duration(4);
                         reservation.setOverdue_charges(15);
 
-                        String allowed_return_date = reserved_date;  // Start date
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        Calendar c = Calendar.getInstance();
+
                         c.setTime(sdf.parse(allowed_return_date));
                         c.add(Calendar.DATE, 28);  // number of days to add
                         allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
@@ -392,9 +393,7 @@ public class MemberController {
                         reservation.setLending_duration(4);
                         reservation.setOverdue_charges(10);
 
-                        String allowed_return_date = reserved_date;  // Start date
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        Calendar c = Calendar.getInstance();
+
                         c.setTime(sdf.parse(allowed_return_date));
                         c.add(Calendar.DATE, 28);  // number of days to add
                         allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
@@ -413,9 +412,7 @@ public class MemberController {
                         reservation.setLending_duration(5);
                         reservation.setOverdue_charges(5);
 
-                        String allowed_return_date = reserved_date;  // Start date
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        Calendar c = Calendar.getInstance();
+
                         c.setTime(sdf.parse(allowed_return_date));
                         c.add(Calendar.DATE, 35);  // number of days to add
                         allowed_return_date = sdf.format(c.getTime());  // allowed_return_date is now the new date
@@ -435,7 +432,45 @@ public class MemberController {
                 reservation.setBook_name(book_name);
                 reservation.setReserved_date(reserved_date);
 
-                        reservationService.saveReservation(reservation);
+                long num_of_reservations = reservationService.getNumberOfReservationByEmail(reverving_user_email);
+
+                if (Objects.equals(level, "Bronze"))
+                {
+                    if(num_of_reservations >= 3)
+                    {
+                        return "redirect:/user/viewallbooks?bronzeerror";
+                    }
+                    else {reservationService.saveReservation(reservation);}
+
+                }
+                else if (Objects.equals(level, "Silver"))
+                {
+                    if(num_of_reservations >= 5)
+                    {
+                        return "redirect:/user/viewallbooks?silvererror";
+                    }
+                    else {reservationService.saveReservation(reservation);}
+
+                }
+                else if (Objects.equals(level, "Gold"))
+                {
+                    if(num_of_reservations >= 7)
+                    {
+                        return "redirect:/user/viewallbooks?golderror";
+                    }
+                    else {reservationService.saveReservation(reservation);}
+
+                }
+                else if (Objects.equals(level, "Platinum"))
+                {
+                    if(num_of_reservations >= 10)
+                    {
+                        return "redirect:/user/viewallbooks?platinumerror";
+                    }
+                    else {reservationService.saveReservation(reservation);}
+
+                }
+
 
 
             }//end of (blacklist check) else

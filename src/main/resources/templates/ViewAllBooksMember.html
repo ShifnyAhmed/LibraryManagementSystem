@@ -70,6 +70,19 @@
             <div class="alert alert-danger">You are blacklisted by the admin, you are not allowed to reserve books !</div>
         </div>
 
+        <div th:if="${param.bronzeerror}">
+            <div class="alert alert-danger">Bronze Level Members Are Only Allowed To Reserve Upto 3 Books !</div>
+        </div>
+        <div th:if="${param.silvererror}">
+            <div class="alert alert-danger">Silver Level Members Are Only Allowed To Reserve Upto 5 Books !</div>
+        </div>
+        <div th:if="${param.golderror}">
+            <div class="alert alert-danger">Gold Level Members Are Only Allowed To Reserve Upto 7 Books !</div>
+        </div>
+        <div th:if="${param.platinumerror}">
+            <div class="alert alert-danger">Platinum Level Members Are Only Allowed To Reserve Upto 10 Books !</div>
+        </div>
+
     </div>
 
     <div class="container mt-5">

@@ -11,7 +11,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     List<Reservation> findByStatus(String status);
 
-    List<Reservation> countReservationByEmail(String email);
+   long countReservationByEmail(String email);
 
     List<Reservation> findByEmailAndStatus(String email, String status);
 }

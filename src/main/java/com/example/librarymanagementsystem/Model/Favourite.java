@@ -10,6 +10,9 @@ public class Favourite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "book_id")
+    private Long bookid;
+
     @Column(name = "book_name")
     private String bookname;
 
@@ -35,8 +38,9 @@ public class Favourite {
 
     }
 
-    public Favourite(Long id, String bookname, String email, String author, String category, String image_file_name, String pdf_file_name) {
+    public Favourite(Long id, Long bookid, String bookname, String email, String author, String category, String image_file_name, String pdf_file_name) {
         this.id = id;
+        this.bookid = bookid;
         this.bookname = bookname;
         this.email = email;
         this.author = author;
@@ -45,7 +49,8 @@ public class Favourite {
         this.pdf_file_name = pdf_file_name;
     }
 
-    public Favourite(String bookname, String email, String author, String category, String image_file_name, String pdf_file_name) {
+    public Favourite(Long bookid, String bookname, String email, String author, String category, String image_file_name, String pdf_file_name) {
+        this.bookid = bookid;
         this.bookname = bookname;
         this.email = email;
         this.author = author;
@@ -110,5 +115,13 @@ public class Favourite {
 
     public void setPdf_file_name(String pdf_file_name) {
         this.pdf_file_name = pdf_file_name;
+    }
+
+    public Long getBookid() {
+        return bookid;
+    }
+
+    public void setBookid(Long bookid) {
+        this.bookid = bookid;
     }
 }

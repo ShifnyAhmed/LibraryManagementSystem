@@ -679,8 +679,6 @@ public class AdminController {
 
         String notify = "Your Message Has Been Read By The Admin And Resolved";
 
-        contactService.deleteMessage(id);
-
             Optional<Contact> cntct = contactRepository.findById(id);
 
             if(cntct.isPresent())
@@ -696,6 +694,8 @@ public class AdminController {
 
                 notificationService.AddNotification(notification);
             }
+
+                    contactService.deleteMessage(id);
 
 
         return  "redirect:/admin/allmessages?deletemsgsuccess";

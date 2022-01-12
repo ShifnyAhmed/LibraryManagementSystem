@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>Showcase Books</title>
+    <title>My favourites</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -66,30 +66,13 @@
     <!--End of header-->
 
     <div align="center">
-        <div th:if="${param.blacklisted}">
-            <div class="alert alert-danger">You are blacklisted by the admin, you are not allowed to reserve books !</div>
+        <div th:if="${param.removesuccess}">
+            <div class="alert alert-success">Book Removed from Favourites Successfully !</div>
         </div>
 
-        <div th:if="${param.bronzeerror}">
-            <div class="alert alert-danger">Bronze Level Members Are Only Allowed To Reserve Upto 3 Books !</div>
+        <div th:if="${param.removefailure}">
+            <div class="alert alert-danger">Something went wrong !</div>
         </div>
-        <div th:if="${param.silvererror}">
-            <div class="alert alert-danger">Silver Level Members Are Only Allowed To Reserve Upto 5 Books !</div>
-        </div>
-        <div th:if="${param.golderror}">
-            <div class="alert alert-danger">Gold Level Members Are Only Allowed To Reserve Upto 7 Books !</div>
-        </div>
-        <div th:if="${param.platinumerror}">
-            <div class="alert alert-danger">Platinum Level Members Are Only Allowed To Reserve Upto 10 Books !</div>
-        </div>
-
-        <div th:if="${param.favouritesuccess}">
-            <div class="alert alert-success">Added To Your Favourites!</div>
-        </div>
-        <div th:if="${param.favouritefailure}">
-            <div class="alert alert-danger">Something went wrong, couldn't add to favourites !</div>
-        </div>
-
     </div>
 
     <div class="container mt-5">
@@ -98,7 +81,7 @@
 
             <!--        Content in middle-->
 
-            <h1><b><i>Showcase Library</i></b></h1>
+            <h1><b><i>My Favourites</i></b></h1>
             <table class="table">
                 <thead class="thead-dark">
                 <tr>
@@ -109,19 +92,18 @@
                     <th scope="col">Category</th>
                     <th scope="col">Action</th>
                     <th scope="col">Action</th>
-                    <th scope="col">Action</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="Book : ${member_all_books}">
+                <tr th:each="Favourite : ${view_my_favourite_books}">
 
-                    <td><img th:src="@{${'../static/uploads/'+Book.getFileName()}}" width="250" height="250" ></td>
-                    <td th:text="${Book.getBookname()}"></td>
-                    <td th:text="${Book.getAuthor()}"></td>
-                    <td th:text="${Book.getCategory()}"></td>
-                    <td><a th:href="@{/user/bookdetailspage/{id}(id=${Book.getId()})}" class="btn btn-success">View Book</a></td>
-                    <td><a th:href="@{/user/reservebookpage/{id}(id=${Book.getId()})}" class="btn btn-success">Reserve Book</a></td>
-                    <td><a th:href="@{/user/addtofavourite/{id}(id=${Book.getId()})}" class="btn btn-success">Add To Favourite</a></td>
+                    <td><img th:src="@{${'../static/uploads/'+Favourite.getImage_file_name()}}" width="250" height="250" ></td>
+                    <td th:text="${Favourite.getBookname()}"></td>
+                    <td th:text="${Favourite.getAuthor()}"></td>
+                    <td th:text="${Favourite.getCategory()}"></td>
+                    <td><a th:href="@{/user/bookdetailspage/{id}(id=${Favourite.getBookid()})}" class="btn btn-success">View Book</a></td>
+                    <td><a th:href="@{/user/removefromfavourites/{id}(id=${Favourite.getId()})}" class="btn btn-success">Remove from Favourite</a></td>
                 </tr>
                 </tbody>
             </table>

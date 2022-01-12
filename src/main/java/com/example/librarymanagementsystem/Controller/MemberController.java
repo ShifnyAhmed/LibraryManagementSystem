@@ -13,10 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +46,9 @@ public class MemberController {
 
     @Autowired
     ReturnedService returnedService;
+
+    @Autowired
+    FavouriteService favouriteService;
 
 //    -------------------------------------------------------------------------------------------------
 
@@ -708,6 +710,125 @@ public class MemberController {
 
         return "ReservationHistoryMember";
     }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    @GetMapping(value = "/user/addtofavourite/{id}")
+    public String AddToFavourite(@Valid Notification notification,
+                                 @Valid Favourite favourite,
+                                 @PathVariable("id") Long id, Model model) throws IOException {
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        try{
+
+            Optional<Book> favourite_book = bookRepository.findById(id);
+
+            long book_id = favourite_book.get().getId();
+            String book_name = favourite_book.get().getBookname();
+            String member_email = userDetails.getUsername();
+            String book_author = favourite_book.get().getAuthor();
+            String image_file_name = favourite_book.get().getFileName();
+            String pdf_file_name = favourite_book.get().getPdfName();
+            String book_category = favourite_book.get().getCategory();
+
+            favourite.setBookid(book_id);
+            favourite.setBookname(book_name);
+            favourite.setEmail(member_email);
+            favourite.setAuthor(book_author);
+            favourite.setCategory(book_category);
+            favourite.setImage_file_name(image_file_name);
+            favourite.setPdf_file_name(pdf_file_name);
+
+           boolean check = favouriteService.AddToFavourite(favourite);
+
+            String message;
+           if(check)
+           {
+               message = "Book: "+book_name+" is added to your favourites.";
+           }
+           else
+           {
+               message = "Book: "+book_name+" couldn't be added to favourites, try informing the issue to admin.";
+           }
+
+            DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            notification.setDate(dateTimeFormatter2.format(localDateTime));
+            notification.setEmail(member_email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
+
+
+            return "redirect:/user/viewallbooks?favouritesuccess";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "redirect:/user/viewallbooks?favouritefailure";
+        }
+
+    }
+
+//   -------------------------------------------------------------------------------------------------
+
+    @RequestMapping(value = "/user/viewmyfavourites/{email}")
+    public String ViewFavourites(@PathVariable("email") String email, Model model)
+    {
+        List<Favourite> view_my_favourite_books = favouriteService.GetAllFavouritesByEmail(email);
+
+        model.addAttribute("view_my_favourite_books",view_my_favourite_books);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        return "ViewFavouritesMember";
+    }
+
+//   -------------------------------------------------------------------------------------------------
+
+    //this deletes the selected message
+    @GetMapping(value = "/user/removefromfavourites/{id}")
+    public String RemoveFromFavourites(@Valid Notification notification,@PathVariable("id") Long id, Model model) throws IOException {
+
+        DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+        String member_email = userDetails.getUsername();
+
+        try
+        {
+            Optional<Favourite> favourite = favouriteService.GetFavouriteBookByID(id);
+
+            String book_name = favourite.get().getBookname();
+
+            String notify = "Book: "+book_name+" has been removed from your favourites";
+
+                notification.setMessage(notify);
+                notification.setDate(dateTimeFormatter2.format(localDateTime));
+                notification.setEmail(member_email);
+
+                notificationService.AddNotification(notification);
+                favouriteService.removeFromFavouriteByID(id);
+
+            return  "redirect:/user/viewmyfavourites/"+member_email+"?removesuccess";
+
+        }
+        catch (Exception e)
+        {
+            return  "redirect:/user/viewmyfavourites/"+member_email+"?removefailure";
+        }
+
+    }
+
+
 
 
 }

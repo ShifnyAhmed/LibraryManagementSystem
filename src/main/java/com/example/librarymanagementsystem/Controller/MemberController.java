@@ -693,7 +693,21 @@ public class MemberController {
     }
 
 
+//    -------------------------------------------------------------------------------------------------
 
+    @RequestMapping(value = "/user/viewreturnedreservations/{email}/{status}")
+    public String ViewReservationHistory(@PathVariable("status") String status,@PathVariable("email") String email, Model model)
+    {
+        List<Returned> returned_reservation_history = returnedService.getReturnedReservationByEmailAndStatus(email, status);
+
+        model.addAttribute("returned_reservation_history",returned_reservation_history);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        return "ReservationHistoryMember";
+    }
 
 
 }

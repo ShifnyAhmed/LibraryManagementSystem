@@ -68,6 +68,15 @@
     </nav>
     <!--End of header-->
 
+    <div align="center">
+        <div th:if="${param.returnedsuccess}">
+            <div class="alert alert-success">Book Successfully Marked As Returned, Check Reservation History !</div>
+        </div>
+
+        <div th:if="${param.returnedfailure}">
+            <div class="alert alert-danger">Something Went Wrong, Couldn't Mark Book As Returned !</div>
+        </div>
+    </div>
 
     <br><br>
     <div align="center">

@@ -815,14 +815,14 @@ public class AdminController {
 
 //    -------------------------------------------------------------------------------------------------
 
-    //Updates status of reservation as "Approved"
+    //Rejects the Reservation-deletes the reservaion from list and notifies user
     @PostMapping(value = "/admin/rejectreservation")
-    public String UpdateOrder(@Valid Reservation reservation, @Valid Notification notification,
-                              @RequestParam("reservation_id")Long reservation_id,
-                              @RequestParam("member_email")String member_email,
-                              @RequestParam("book_name") String book_name,
-                              @RequestParam("reserved_date")String reserved_date
-                                , Model model) {
+    public String DeleteReservation(@Valid Notification notification,
+                                    @RequestParam("reservation_id") Long reservation_id,
+                                    @RequestParam("member_email") String member_email,
+                                    @RequestParam("book_name") String book_name,
+                                    @RequestParam("reserved_date") String reserved_date
+            , Model model) {
 
 
         try{
@@ -890,6 +890,66 @@ public class AdminController {
 
         return "ConfirmReturnedAdmin";
     }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    //Updates status of returned reservation as "Returned"
+    @PostMapping(value = "/admin/confirmreturned")
+    public String ConfirmReturnedReservation(@Valid Returned returned, @Valid Notification notification,
+                                     @RequestParam("returned_reservation_id")Long returned_reservation_id,
+                                     @RequestParam("book_id")Long book_id,
+                                     @RequestParam("member_email")String member_email,
+                                     @RequestParam("book_name") String book_name,
+                                     @RequestParam("lending_duration") String lending_duration,
+                                     @RequestParam("lending_charges")String lending_charges,
+                                     @RequestParam("overdue_charges")String overdue_charges,
+                                     @RequestParam("reserved_date")String reserved_date,
+                                     @RequestParam("allowed_return_date")String allowed_return_date,
+                                     @RequestParam("actual_return_date")String actual_return_date,
+                                     @RequestParam("total")String total,
+                                     Model model) {
+        try {
+            returned.setId(returned_reservation_id);
+            returned.setBook_id(book_id);
+            returned.setBook_name(book_name);
+            returned.setEmail(member_email);
+            returned.setLending_duration(Integer.parseInt(lending_duration));
+            returned.setLending_charges(Integer.parseInt(lending_charges));
+            returned.setOverdue_charges(Integer.parseInt(overdue_charges));
+            returned.setReserved_date(reserved_date);
+            returned.setAllowed_return_date(allowed_return_date);
+            returned.setActual_return_date(actual_return_date);
+            returned.setTotal(Integer.parseInt(total));
+
+            returned.setStatus("Returned");
+
+            returnedService.saveReturnedReservation(returned);
+
+
+
+            String message = "The Book: "+book_name+" has been confirmed as returned on "+actual_return_date+", see more details of your returned books in Reservation History Page";
+
+            //notifying user on admin returned confirmation
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(member_email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+            return  "redirect:/admin/viewreturnedbooks/Checking%20Returned?returnedsuccess";
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return  "redirect:/admin/viewreturnedbooks/Checking%20Returned?returnedfailure";
+        }
+
+    }
+
 
     //    -------------------------------------------------------------------------------------------------
 

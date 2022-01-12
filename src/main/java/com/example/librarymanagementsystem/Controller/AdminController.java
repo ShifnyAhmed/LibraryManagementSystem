@@ -886,7 +886,7 @@ public class AdminController {
         model.addAttribute("allowed_return_date",returned_reservation_details.get().getAllowed_return_date());
         model.addAttribute("overdue_charges",returned_reservation_details.get().getOverdue_charges());
         model.addAttribute("actual_return_date",returned_reservation_details.get().getAllowed_return_date());
-        model.addAttribute("total",returned_reservation_details.get().getOverdue_charges());
+        model.addAttribute("total",returned_reservation_details.get().getTotal());
 
         return "ConfirmReturnedAdmin";
     }
@@ -967,10 +967,87 @@ public class AdminController {
         model.addAttribute("lending_charges",returned_reservation_details.get().getLending_charges());
         model.addAttribute("allowed_return_date",returned_reservation_details.get().getAllowed_return_date());
         model.addAttribute("overdue_charges",returned_reservation_details.get().getOverdue_charges());
-        model.addAttribute("actual_return_date",returned_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("actual_return_date",returned_reservation_details.get().getActual_return_date());
         model.addAttribute("total",returned_reservation_details.get().getOverdue_charges());
 
         return "NotReturnedAdmin";
     }
 
+    //    -------------------------------------------------------------------------------------------------
+
+
+    //This functions saves the details of the selected row of returned reservation table to reservation table with status as "Checking Returned"
+    //And deletes the selected row from returned reservation table
+    @PostMapping(value = "/admin/notreturned")
+    public String NotReturnedReservation(@Valid Reservation reservation, @Valid Notification notification,
+                                             @RequestParam("returned_reservation_id")Long returned_reservation_id,
+                                             @RequestParam("book_id")Long book_id,
+                                             @RequestParam("member_email")String member_email,
+                                             @RequestParam("book_name") String book_name,
+                                             @RequestParam("lending_duration") String lending_duration,
+                                             @RequestParam("lending_charges")String lending_charges,
+                                             @RequestParam("overdue_charges")String overdue_charges,
+                                             @RequestParam("reserved_date")String reserved_date,
+                                             @RequestParam("allowed_return_date")String allowed_return_date,
+                                             Model model) {
+        try {
+
+            reservation.setBook_id(book_id);
+            reservation.setBook_name(book_name);
+            reservation.setEmail(member_email);
+            reservation.setLending_duration(Integer.parseInt(lending_duration));
+            reservation.setLending_charges(Integer.parseInt(lending_charges));
+            reservation.setOverdue_charges(Integer.parseInt(overdue_charges));
+            reservation.setReserved_date(reserved_date);
+            reservation.setAllowed_return_date(allowed_return_date);
+
+            reservation.setTotal(0);
+            reservation.setActual_return_date(null);
+
+            reservation.setStatus("Approved");
+
+            reservationService.saveReservation(reservation);
+
+            returnedService.deleteReturnedReservationById(returned_reservation_id);
+
+
+
+            String message = "The Book: "+book_name+" you marked as returned is found out to be be not returned yet and was set back to previous state, continuing to make such kind of fake returned confirmation would lead to your account being Blacklisted.";
+
+            //notifying user on admin returned confirmation
+
+            notification.setDate(dateTimeFormatter.format(localDateTime));
+            notification.setEmail(member_email);
+            notification.setMessage(message);
+            notificationService.AddNotification(notification);
+
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+            model.addAttribute("useremail",userDetails);
+
+            return  "redirect:/admin/viewreturnedbooks/Checking%20Returned?notreturnedsuccess";
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return  "redirect:/admin/viewreturnedbooks/Checking%20Returned?notreturnedfailure";
+        }
+
+    }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    @RequestMapping(value = "/admin/viewreservationhistory/{status}")
+    public String ViewReservationHistory(@PathVariable("status") String status, Model model)
+    {
+        List<Returned> reservation_history = returnedService.getReturnedReservationByStatus(status);
+
+        model.addAttribute("reservation_history",reservation_history);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        return "ReservationHistoryAdmin";
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReturnedServiceImpl implements ReturnedService{
@@ -35,6 +36,11 @@ public class ReturnedServiceImpl implements ReturnedService{
     @Override
     public void deleteReturnedReservationById(Long id) {
                 returnedRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Returned> getReturnedReservationByID(Long id) {
+        return returnedRepository.findById(id);
     }
 
     @Override

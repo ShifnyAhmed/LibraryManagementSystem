@@ -39,6 +39,12 @@
                     <a class="nav-link" th:href="@{/admin/viewpendingreservations/{status}(status='Pending')}">View Lend Request</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/viewreturnedbooks/{status}(status='Checking Returned')}">Confirm Returned</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/viewreservationhistory/{status}(status='Returned')}">View Reservation History</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" th:href="@{/admin/viewallmembers}">View Members</a>
                 </li>
                 <li class="nav-item">

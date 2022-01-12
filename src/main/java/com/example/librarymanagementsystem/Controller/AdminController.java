@@ -57,6 +57,9 @@ public class AdminController {
     @Autowired
     ReservationService reservationService;
 
+    @Autowired
+    ReturnedService returnedService;
+
     //displays all the members of showcase bookstore who are not blacklisted
     @RequestMapping(value = "/admin/viewallmembers")
     public String viewAllUsers(Model model)
@@ -848,6 +851,44 @@ public class AdminController {
 
         }
 
+    }
+
+//    -------------------------------------------------------------------------------------------------
+
+    @RequestMapping(value = "/admin/viewreturnedbooks/{status}")
+    public String ViewReservationMarkedAsReturnedByMember(@PathVariable("status") String status, Model model)
+    {
+        List<Returned> returned_reservations_list = returnedService.getReturnedReservationByStatus(status);
+
+        model.addAttribute("returned_reservations_list",returned_reservations_list);
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        model.addAttribute("useremail",userDetails);
+
+        return "ReturnedReservationsAdmin";
+    }
+
+ //    -------------------------------------------------------------------------------------------------
+
+    @GetMapping(value = "/admin/confirmreturnedpage/{id}")
+    public String ConfirmReturnedPage(@PathVariable("id") Long id,Model model)
+    {
+        Optional<Returned> returned_reservation_details = returnedService.getReturnedReservationByID(id);
+
+        model.addAttribute("reservation_id",returned_reservation_details.get().getId());
+        model.addAttribute("book_id",returned_reservation_details.get().getBook_id());
+        model.addAttribute("member_email",returned_reservation_details.get().getEmail());
+        model.addAttribute("bookname",returned_reservation_details.get().getBook_name());
+        model.addAttribute("reserved_date",returned_reservation_details.get().getReserved_date());
+        model.addAttribute("lending_duration",returned_reservation_details.get().getLending_duration());
+        model.addAttribute("lending_charges",returned_reservation_details.get().getLending_charges());
+        model.addAttribute("allowed_return_date",returned_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("overdue_charges",returned_reservation_details.get().getOverdue_charges());
+        model.addAttribute("actual_return_date",returned_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("total",returned_reservation_details.get().getOverdue_charges());
+
+        return "ConfirmReturnedAdmin";
     }
 
 }

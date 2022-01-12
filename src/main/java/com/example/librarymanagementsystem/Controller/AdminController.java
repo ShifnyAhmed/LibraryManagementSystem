@@ -876,7 +876,7 @@ public class AdminController {
     {
         Optional<Returned> returned_reservation_details = returnedService.getReturnedReservationByID(id);
 
-        model.addAttribute("reservation_id",returned_reservation_details.get().getId());
+        model.addAttribute("returned_reservation_id",returned_reservation_details.get().getId());
         model.addAttribute("book_id",returned_reservation_details.get().getBook_id());
         model.addAttribute("member_email",returned_reservation_details.get().getEmail());
         model.addAttribute("bookname",returned_reservation_details.get().getBook_name());
@@ -889,6 +889,28 @@ public class AdminController {
         model.addAttribute("total",returned_reservation_details.get().getOverdue_charges());
 
         return "ConfirmReturnedAdmin";
+    }
+
+    //    -------------------------------------------------------------------------------------------------
+
+    @GetMapping(value = "/admin/notreturnedpage/{id}")
+    public String NotReturnedPage(@PathVariable("id") Long id,Model model)
+    {
+        Optional<Returned> returned_reservation_details = returnedService.getReturnedReservationByID(id);
+
+        model.addAttribute("returned_reservation_id",returned_reservation_details.get().getId());
+        model.addAttribute("book_id",returned_reservation_details.get().getBook_id());
+        model.addAttribute("member_email",returned_reservation_details.get().getEmail());
+        model.addAttribute("bookname",returned_reservation_details.get().getBook_name());
+        model.addAttribute("reserved_date",returned_reservation_details.get().getReserved_date());
+        model.addAttribute("lending_duration",returned_reservation_details.get().getLending_duration());
+        model.addAttribute("lending_charges",returned_reservation_details.get().getLending_charges());
+        model.addAttribute("allowed_return_date",returned_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("overdue_charges",returned_reservation_details.get().getOverdue_charges());
+        model.addAttribute("actual_return_date",returned_reservation_details.get().getAllowed_return_date());
+        model.addAttribute("total",returned_reservation_details.get().getOverdue_charges());
+
+        return "NotReturnedAdmin";
     }
 
 }

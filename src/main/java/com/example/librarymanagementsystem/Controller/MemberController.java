@@ -748,6 +748,7 @@ public class MemberController {
 
            if(already_exist.isPresent()){
 
+               //this part gets executed if the user has already added the book to favourite
                return "redirect:/user/viewallbooks?alreadyexist";
 
            }

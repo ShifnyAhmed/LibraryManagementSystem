@@ -717,7 +717,7 @@ public class MemberController {
     @GetMapping(value = "/user/addtofavourite/{id}")
     public String AddToFavourite(@Valid Notification notification,
                                  @Valid Favourite favourite,
-                                 @PathVariable("id") Long id, Model model) throws IOException {
+                                 @PathVariable("id") Long id, Model model) {
 
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails=(UserDetails)authentication.getPrincipal();
@@ -743,28 +743,50 @@ public class MemberController {
             favourite.setImage_file_name(image_file_name);
             favourite.setPdf_file_name(pdf_file_name);
 
-           boolean check = favouriteService.AddToFavourite(favourite);
+
+           Optional<Favourite> already_exist = favouriteService.CheckIfBook_IsAlreadyAddedTo_Favorite(book_name,member_email);
+
+           if(already_exist.isPresent()){
+
+               return "redirect:/user/viewallbooks?alreadyexist";
+
+           }
+           else
+           {
+                 boolean check = favouriteService.AddToFavourite(favourite);
 
             String message;
            if(check)
            {
                message = "Book: "+book_name+" is added to your favourites.";
+               DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+               LocalDateTime localDateTime = LocalDateTime.now();
+
+               notification.setDate(dateTimeFormatter2.format(localDateTime));
+               notification.setEmail(member_email);
+               notification.setMessage(message);
+               notificationService.AddNotification(notification);
+               return "redirect:/user/viewallbooks?favouritesuccess";
            }
            else
            {
                message = "Book: "+book_name+" couldn't be added to favourites, try informing the issue to admin.";
+               DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+               LocalDateTime localDateTime = LocalDateTime.now();
+
+               notification.setDate(dateTimeFormatter2.format(localDateTime));
+               notification.setEmail(member_email);
+               notification.setMessage(message);
+               notificationService.AddNotification(notification);
+               return "redirect:/user/viewallbooks?favouritefailure";
            }
 
-            DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime localDateTime = LocalDateTime.now();
-
-            notification.setDate(dateTimeFormatter2.format(localDateTime));
-            notification.setEmail(member_email);
-            notification.setMessage(message);
-            notificationService.AddNotification(notification);
 
 
-            return "redirect:/user/viewallbooks?favouritesuccess";
+
+
+        }
+
         }
         catch (Exception e)
         {

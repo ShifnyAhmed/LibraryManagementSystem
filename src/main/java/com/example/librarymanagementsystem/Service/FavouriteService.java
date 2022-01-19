@@ -18,4 +18,6 @@ public interface FavouriteService {
 
     boolean AddToFavourite(Favourite favourite) throws IOException;
 
+    Optional<Favourite> CheckIfBook_IsAlreadyAddedTo_Favorite(String bookname,String email);
+
 }

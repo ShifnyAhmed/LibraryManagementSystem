@@ -89,6 +89,9 @@
         <div th:if="${param.favouritefailure}">
             <div class="alert alert-danger">Something went wrong, couldn't add to favourites !</div>
         </div>
+        <div th:if="${param.alreadyexist}">
+            <div class="alert alert-danger">Book Is Already Added To Your Favourites !</div>
+        </div>
 
     </div>
 

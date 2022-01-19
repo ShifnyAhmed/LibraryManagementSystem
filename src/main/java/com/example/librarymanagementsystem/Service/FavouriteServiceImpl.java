@@ -52,4 +52,10 @@ public class FavouriteServiceImpl implements FavouriteService{
         }
         return false;
     }
+
+    @Override
+    public Optional<Favourite> CheckIfBook_IsAlreadyAddedTo_Favorite(String bookname, String email) {
+
+        return favouriteRepository.findByBooknameAndEmail(bookname,email);
+    }
 }

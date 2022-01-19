@@ -583,6 +583,7 @@ public class MemberController {
             Date reserved_date_date = sdf.parse(reserved_date);
             Date should_return_date = sdf.parse(allowed_return_date);
             Date returned_date = sdf.parse(dateTimeFormatter.format(localDateTime));
+
             model.addAttribute("returned_on",dateTimeFormatter.format(localDateTime));
 
             //if book was marked returned after the reserved date

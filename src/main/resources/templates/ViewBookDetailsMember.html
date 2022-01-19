@@ -164,11 +164,16 @@
                                     <!-- Button -->
 
 
-
                                     <tbody>
                                     <tr th:each="Book: ${view_book_details}">
-                                        <td>
+                                        <td align="center">
+
+                                            <a th:href="@{/user/reservebookpage/{id}(id=${view_book_details.get().getId()})}" class="btn" style="background-color: #009E60; color: white;" >Reserve Book</a>
+
+                                            <a th:href="@{/user/addtofavourite/{id}(id=${view_book_details.get().getId()})}" class="btn" style="background-color: #009E60; color: white;" >Add To Favourite</a>
+
                                             <a th:href="@{/user/readbook/{id}(id=${view_book_details.get().getId()})}" class="btn" style="background-color: #009E60; color: white;" >Read Online</a>
+
                                         </td>
 
                                     </tr>

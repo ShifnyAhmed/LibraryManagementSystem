@@ -113,6 +113,12 @@
                 <div th:if="${param.unsuccess}">
                     <div class="alert alert-danger" style="width: 300px">Something went Wrong !</div>
                 </div>
+                <div th:if="${param.alreadyavailable}">
+                    <div class="alert alert-danger" style="width: 300px">Book with same name already exists !</div>
+                </div>
+                <div th:if="${param.couldntadd}">
+                    <div class="alert alert-danger" style="width: 300px">Book couldn't be added !</div>
+                </div>
 
                 <h2>Add New Book</h2>
 
@@ -127,6 +133,8 @@
                                name="name"
                                style="width: 300px"
                                placeholder="Book Name"
+                               maxlength="45"
+                               minlength="3"
                                required>
 
                         <label style="padding-top: 10px" for="author">Author</label>
@@ -136,6 +144,8 @@
                                name="author"
                                style="width: 300px"
                                placeholder="Book Author"
+                               maxlength="45"
+                               minlength="3"
                                required>
 
                         <label style="padding-top: 10px" for="category">Category</label>

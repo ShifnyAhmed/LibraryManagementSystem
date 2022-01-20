@@ -4,6 +4,7 @@ import com.example.librarymanagementsystem.Model.Book;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService {
 
@@ -11,7 +12,7 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
-    //boolean checkIfBookExist(String book_name);
+    Optional<Book> checkIfBookExist(String bookname);
 
     void deleteBook(Long id);
 }

@@ -381,21 +381,33 @@ public class AdminController {
             book.setPdfPath(pdf_file_path);
             book.setPdf(base64_Encoded_PDF.getBytes(StandardCharsets.UTF_8));
 
+            Optional<Book> already_exist = bookService.checkIfBookExist(book_name);
+
+            if(already_exist.isPresent()){
+                return "redirect:/admin/addbookpage?alreadyavailable";
+            }
+            else{
+
             boolean status = bookService.AddBook(book);
 
-            //displays success msg if status = true (saved the book)
-            if(status)
-            {
-                return "redirect:/admin/addbookpage?success";
+                //displays success msg if status = true (saved the book)
+                if(status)
+                {
+                    return "redirect:/admin/addbookpage?success";
+                }
+                else{
+                    return "redirect:/admin/addbookpage?couldntadd";
+                }
             }
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
+            return "redirect:/admin/addbookpage?unsuccess";
         }
 
-        return "redirect:/admin/addbookpage?unsuccess";
+
     }
 
 //    -------------------------------------------------------------------------------------------------

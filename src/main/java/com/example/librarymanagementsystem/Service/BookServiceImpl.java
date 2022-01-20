@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,6 +38,11 @@ public class BookServiceImpl implements BookService{
     @Override
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    @Override
+    public Optional<Book> checkIfBookExist(String bookname) {
+        return bookRepository.findByBookname(bookname);
     }
 
     @Override

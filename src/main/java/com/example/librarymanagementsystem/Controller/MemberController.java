@@ -80,12 +80,12 @@ public class MemberController {
         try {
             notificationService.ClearAllNotificationByEmail(email);
 
-            return "ViewNotificationMember";
+            return "redirect:/user/viewmynotification/"+userDetails.getUsername()+"?clearnotificationssuccess";
 
         } catch (Exception e) {
 
             e.printStackTrace();
-            return "ViewNotificationMember";
+            return "redirect:/user/viewmynotification/"+userDetails.getUsername()+"?clearnotificationsunsuccess";
         }
     }
 
@@ -200,35 +200,46 @@ public class MemberController {
                              @RequestParam("dateofbirthold") String dateofbirth_old,Model model) {
 
 
+
         try {
 
             if(dateofbirth.isEmpty())
             {
-                //updating the user details
+                //updating the user details with old date of birth
                 userService.EditProfile(name,contact,email,dateofbirth_old,id);
+
+                Authentication authentication2= SecurityContextHolder.getContext().getAuthentication();
+                UserDetails userDetails2=(UserDetails)authentication2.getPrincipal();
+                model.addAttribute("useremail",userDetails2);
+
+                return "redirect:/user/viewprofile/"+userDetails2.getUsername()+"?editprofilesuccess";
 
             }
             else{
 
-                //updating the user details
+                //updating the user details with edited date of birth
                 userService.EditProfile(name,contact,email,dateofbirth,id);
 
+                Authentication authentication3= SecurityContextHolder.getContext().getAuthentication();
+                UserDetails userDetails3=(UserDetails)authentication3.getPrincipal();
+                model.addAttribute("useremail",userDetails3);
 
+                return "redirect:/user/viewprofile/"+userDetails3.getUsername()+"?editprofilesuccess";
             }
+
+
+
+        } catch (Exception e) {
 
             Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
             UserDetails userDetails=(UserDetails)authentication.getPrincipal();
             model.addAttribute("useremail",userDetails);
 
-        } catch (Exception e) {
-
             e.printStackTrace();
-            return "ViewProfileMember";
+            return "redirect:/user/viewprofile/"+userDetails.getUsername()+"?editprofilefail";
 
         }
 
-        //redirecting to ViewProfileMember html page
-        return "ViewProfileMember";
     }
 
 //    -------------------------------------------------------------------------------------------------

@@ -130,7 +130,8 @@
                                th:value="${name}"
                                name="name"
                                style="width: 300px"
-                               minlength="3">
+                               minlength="3"
+                                required>
 
                         <label for="email">Email</label>
                         <input type="email"
@@ -138,7 +139,8 @@
                                class="form-control"
                                th:value="${email}"
                                name="email"
-                               style="width: 300px">
+                               style="width: 300px"
+                                required>
 
                         <label for="contact">Contact</label>
                         <input type="text"
@@ -148,7 +150,8 @@
                                style="width: 300px"
                                name="contact"
                                minlength="10"
-                               maxlength="10">
+                               maxlength="10"
+                                required>
 
                         <label for="dateofbirth"> Date of Birth </label>
                         <input type="date"
